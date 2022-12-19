@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <title>submit job</title>
+    <script type="text/javascript" src="script.js"></script>
+</head>
+<body>
+    <ul>
+        <li><a href="submit_job.html">Submit Job</a></li>
+        <li><a href="browse_structers.html">Browse database</a></li>
+    </ul>
+
+    
+    <div id="applet1"></div> 
+
+    <input id="pdb_txt_input" type="text" value="PDB_ID" />
+    <input id="fname" type="text" value="output file name" />
+    <input id="chain" type="text" value="chain" />
+    <input id="segbeg" type="number" value="segbeg" />
+    <input id="segend" type="number" value="segend" />
+    <!--
+    <input id="target_residues_phi" type="text" value="target_residues_phi" />
+    <input id="target_residues_psi" type="text" value="target_residues_psi" />
+    <input id="constr_residues_phi" type="text" value="constr_residues_phi" />
+    <input id="constr_residues_psi" type="text" value="constr_residues_psi" />
+    -->
+    <input id="itterations" type="number" value="itterations" />
+    
+    <input type="number"  id="target_residues_phi_idx" name="target_residues_phi_idx"  value=""/>
+    <input type="number"  id="target_residues_phi_value" name="target_residues_phi_value"  value=""/>
+    <button onclick="add_target_phi()" id="add_target_residues_phi">add target phi</button>
+    <button onclick="remove_target_phi()" id="add_target_residues_phi">remove target phi</button>
+    <p id="target_phi_string"></p>
+
+    <input type="number"  id="target_residues_psi_idx" name="target_residues_psi_idx"  value=""/>
+    <input type="number"  id="target_residues_psi_value" name="target_residues_psi_value"  value=""/>
+    <button onclick="add_target_psi()" id="add_target_residues_psi">add target psi</button>
+    <button onclick="remove_target_psi()" id="add_target_residues_psi">remove target psi</button>
+    <p id="target_psi_string"></p>
+
+    <input type="number"  id="constr_residues_phi" name="constr_residues_phi"  value=""/>
+    <button onclick="add_constr_phi()" id="add_constr_residues_phi">add contrain phi</button>
+    <button onclick="remove_constr_phi()" id="add_constr_residues_phi">remove contrain phi</button>
+    <p id="constr_residues_phi_string"></p>
+
+    <input type="number"  id="constr_residues_psi" name="constr_residues_psi"  value=""/>
+    <button  onclick="add_constr_psi()" id="add_constr_residues_psi">add contrain psi</button>
+    <button  onclick="remove_constr_psi()" id="add_constr_residues_psi">remove contrain psi</button>
+    <p id="constr_residues_psi_string"></p>
+    
+    <Button onclick="submit_to_server()">generate</Button>
+    <div id="error_info">
+        <p id="err_txt"></p>
+    </div>
+    
+
+
+</body>
+</html>

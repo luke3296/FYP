@@ -1,0 +1,49 @@
+jmolApplet1._getPropertyAsArray("chaininfo")
+jmolApplet1._getPropertyAsArray("polymerinfo")
+jmolApplet1._loadFile("=pdbid")
+
+program writealine(output); begin writeln('Hello World') end.
+
+new file writealin.c
+
+
+pdbcode='1adg';
+pdb_outname='LADH_loopmovement.pdb';
+chain='A'
+
+segbeg=290;
+segend=301;
+% in format [resnum1 phi1; resnum2 phi2; ..]
+target_residues_phi=[291 -90; 292 -110; 293 -64; 294 -90];
+target_residues_psi=[291 122; 292 -35; 293 147];
+%in format [resnum1 resnum2 ...]
+constr_residues_phi=[295 296];
+constr_residues_psi=[294 295];
+%constr_residues_phi=[];
+%constr_residues_psi=[];
+
+% specifiy number of iternations
+n_iter=10000;
+
+matlab loopModeller2 "pdbcode" 290 301 [291 -90; 292 -110; 293 -64; 294 -90] [291 122; 292 -35; 293 147] [295 296][294 295] 
+matlab loopModeller2 "pdbcode" "fname" 290 301 [] [] [][]
+] 
+pdbcode='1adg';
+pdb_outname='LADH_loopmovement.pdb';
+chain='A'
+
+segbeg=290;
+segend=301;
+% in format [resnum1 phi1; resnum2 phi2; ..]
+target_residues_phi=[291 -90; 292 -110; 293 -64; 294 -90];
+target_residues_psi=[291 122; 292 -35; 293 147];
+%in format [resnum1 resnum2 ...]
+constr_residues_phi=[295 296];
+constr_residues_psi=[294 295];
+%constr_residues_phi=[];
+%constr_residues_psi=[];
+
+% specifiy number of iternations
+n_iter=10000;
+Loop_Modeller2_wrapper('1adg','LADH_loopmovement.pdb','A',290,301,[291 -90; 292 -110; 293 -64; 294 -90],[291 122; 292 -35; 293 147],[295 296] ,10000)
+matlab -nodisplay -nojvm -r  "Loop_Modeller2_wrapper('1adg','LADH_loopmovement.pdb','A',290,301,[291 -90 ; 292 -110; 293 -64; 294 -90],[291 122; 292 -35; 293 147],[295 296],[294 295],10000);exit;";

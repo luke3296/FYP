@@ -1,0 +1,36 @@
+npx create-express-api -d server
+the generator was created by cj from codeing garden
+this generates a api boilerplate 
+
+create a file pdbs.js in the /src/api/ directory create some routes with express.Rouer in it for CRUD operations and export the router with module.exports = router;
+
+in /src/api/index.js require and mount the router created in pdbs.js i mounted on '/pdbs' so api requests to this route will be prepened with /pdbs
+in /src/app.js the api's under /src/api/ will be mounted under /api/v1 so a full request to out endpoint will be /api/v1/pdbs/
+
+install monk and joi. monk is a mongodb driver and doi is a documetn schema validation libary
+run in /server/
+npm install monk @hapi/joi
+
+add MONGO_URI=localhost/pdbs 
+to the enviroment varibles in .env.sample this will connect to a mongoDB database running on localhost with a database called pdbs
+ 
+connec tot the database with monk
+const monk = require("monk");
+const db = monk(process.env.MOGO_URI);
+const pdbs = db.get('pdbs');
+
+install mongodb and create a pdbs database and pdbs collection in that database
+
+create two static web pages to be client side and use the express static middleware to host them in a /public directory
+
+create the directory /server/src/public
+add the static cleint side files
+add the contenst of the jsmol.zip and copy emdba 2 here
+
+set    contentSecurityPolicy: false  on the helmet middle ware. helmet manges http headers
+
+create a browse_structers.html submit_job.html styles.css script.js inside /server/src/public
+
+
+  
+
