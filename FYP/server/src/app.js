@@ -5,6 +5,8 @@ const helmet = require('helmet');
 const cors = require('cors');
 //add path
 const path = require('path');
+//instead of bodyParser
+
 
 require('dotenv').config();
 

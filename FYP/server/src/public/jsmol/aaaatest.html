@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>JSmol Example</title>
+    <script type="text/javascript" src="JSmol.min.js"></script>
+    <script type="text/javascript" src="js/JSmolJME.js"></script>
+    <script type="text/javascript" src="jsme/jsme/jsme.nocache.js"></script>
+    <style>
+      #appdiv {
+        float: left;
+      }
+  
+      #controls {
+        float: right;
+        margin-left: 10px;
+      }
+  
+    </style>
+</head>
+<body>
+    <div id="appdiv"></div>
+    <div id="controls">
+    <input type="button" id="load2model" value="Load Model">
+    <input type="text" id="pdbcode_input">
+    <br>
+    <br>
+    <input type="button" id="Rotate" value="Rotate">
+    <br>
+    <br>
+    <input type="button" id="ResetView" value="Reset View">
+    <br>
+    <br>
+    Start:
+    <input type="number" id="start" min="0" max="500">
+    End:
+    <input type="number" id="end" min="0" max="500">
+    <br>
+    <br>
+    <input type="button" id="Highlight segment" value="Highlight segment">
+    <br>
+    <br>
+    <input type="button" id="PrintAtoms" value="Print Atom Coordinates">
+    <br>
+    <br>
+    <input type="button" id="Calculate Torsion Angles" value="Calculate Torsion Angles">
+    <br>
+    <br>
+    <input type="text" id="cmd_str">
+    <input type="button" id="run_cmd" value="Run Command">
+    </div>
+</body>
+
+<script>
+    window.onload = function() {
+        var JmolInfo = {
+            width: 600,
+            height: 600,
+            serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
+            use: "HTML5",
+            script: "load=1adg"
+        }
+      
+        document.getElementById("appdiv").innerHTML = Jmol.getAppletHtml(
+            "jmolApplet0",
+            JmolInfo
+        );
+
+    };
+
+    function load_pdb() {
+        console.log("clicked" + jmolApplet0);
+        var pdbCode = document.getElementById("pdbcode_input").value;
+        Jmol.script(jmolApplet0, "load=" + pdbCode);
+    }
+
+    function rotate_model() {
+        Jmol.script(jmolApplet0, "rotate y 30");
+    }
+
+    function reset_view() {
+        Jmol.script(jmolApplet0, "reset");
+    }
+
+    function highlight() {
+        var start = document.getElementById("start").value;
+        var end = document.getElementById("end").value;
+        Jmol.script(
+            jmolApplet0,
+            "select " + start + "-" + end + "; color orange"
+        );
+    }
+//doesnt work
+    function print_atoms() {
+    var start = document.getElementById("start").value;
+    var end = document.getElementById("end").value;
+    Jmol.script(jmolApplet0, "console.log(modelView('" + start + "-" + end + "', {atomsOnly: true}));");
+  }
+//doesnt work
+  function calculate_torsion_angles() {
+    var start = document.getElementById("start").value;
+    var end = document.getElementById("end").value;
+    var torsion_angles = Jmol.evaluate(jmolApplet0, "measure torsion " + start + "-" + end);
+    console.log(torsion_angles);
+}
+
+function run_jmol_script() {
+        var cmd = document.getElementById("cmd_str").value;
+        Jmol.script(jmolApplet0, cmd);
+    }
+
+function getBackboneCoordinates(jmolApplet) {
+  // Define the backbone atom names
+    var backboneAtoms = ["N", "CA", "C", "O"];
+    var start = document.getElementById("start").value;
+    var end = document.getElementById("end").value;
+    var atomInfo = Jmol.getPropertyAsArray(jmolApplet0, "atomInfo")
+    console.log(atomInfo)
+
+
+
+  // Initialize an empty array to store the backbone atom coordinates
+  var backboneCoords = [];
+
+  // Iterate over the backbone atoms
+  for (var i = 0; i < backboneAtoms.length; i++) {
+    // Get the coordinates for each backbone atom
+    var atomCoords = Jmol.getAtomProperty(jmolApplet, backboneAtoms[i], "xyz");
+
+    // Push the atom coordinates to the backboneCoords array
+    backboneCoords.push(atomCoords);
+  }
+
+  // Return the backbone atom coordinates
+  return backboneCoords;
+}
+
+    document.getElementById("run_cmd").addEventListener("click", run_jmol_script);
+
+    document.getElementById("Calculate Torsion Angles").addEventListener("click", calculate_torsion_angles);
+
+    document.getElementById("PrintAtoms").addEventListener("click", print_atoms);
+
+    document.getElementById("load2model").addEventListener("click", load_pdb);
+
+    document.getElementById("Rotate").addEventListener("click", rotate_model);
+
+    document.getElementById("ResetView").addEventListener("click", reset_view)
+
+    document.getElementById("Highlight segment").addEventListener("click", highlight)
+  </script>
+
+</html>

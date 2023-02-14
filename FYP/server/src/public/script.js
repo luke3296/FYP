@@ -122,7 +122,8 @@ async function send(){
 
   console.log(content);
 }
-async function submit_to_server(){                     
+async function submit_to_server(){ 
+    console.log("submit()")                    
     let pdb_id = document.getElementById("pdb_txt_input").value;
     let output_fname = document.getElementById("fname").value;
     let chain = document.getElementById("chain").value;
@@ -130,9 +131,33 @@ async function submit_to_server(){
     let segend = Number.parseInt(document.getElementById("segend").value);
     let itterations = Number.parseInt( document.getElementById("itterations").value);
     let isValid = validateInput(pdb_id,output_fname,chain,segbeg,segend,itterations);
+   
     if(isValid){
       console.log("send json");
+      obj={
+        "pdb_id" : pdb_id,
+        "fname" : output_fname,
+        "chain" : chain,
+        "segbeg" : segbeg,
+        "segend" : segend,
+        "target_residues_phi" : target_residues_phi_stack ,
+        "target_residues_psi" : target_residues_psi_stack ,
+        "constr_residues_phi" : constr_residues_phi_stack ,
+        "constr_residues_psi" : constr_residues_psi_stack,
+        "itterations" : itterations
+      }
+    //  console.log(obj)
 
+      fetch('http://localhost:5123/api/v1/pdbs/', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(obj)
+        }).then(res => res.json())
+        .then(res => console.log(res));
+      
     }
    /*
     var ajax_req = new XMLHttpRequest();
@@ -274,7 +299,7 @@ async function listen_for_file(fname) {
     targ_psi_str = "";
     constr_phi_str = "";
     constr_psi_str = "";
-  target_residues_phi_stack.forEach(element => {
+    target_residues_phi_stack.forEach(element => {
     console.log(target_residues_phi_stack);
     console.log(element);
     targ_phi_str = targ_phi_str +" "+ element[0] +" "+ element[1] + ", "
@@ -293,4 +318,38 @@ async function listen_for_file(fname) {
   document.getElementById("target_psi_string").innerHTML =targ_psi_str;
   document.getElementById("constr_residues_phi_string").innerHTML = constr_phi_str;
   document.getElementById("constr_residues_psi_string").innerHTML =constr_psi_str;
+  }
+  function generate(){
+    console.log("generate called")
+  }
+
+
+  
+
+  function setDefault(){
+     document.getElementById("pdb_txt_input").value = "1ADG";
+     document.getElementById("fname").value = "1ADG_A_201_310_PHITARGS_291_-90_292_-110_293_-64_294_-90_PSITARGS_291_122_292_-35_293_147_PHICONSTR_295_296_PSICONSTR_294_295_INTR_10000"
+     document.getElementById("chain").value = "A";
+     document.getElementById("segbeg").value = 290;
+     document.getElementById("segend").value = 301;
+     document.getElementById("itterations").value =10000;
+
+
+
+     target_residues_phi_stack.push([291, -90])
+     target_residues_phi_stack.push([292, -110])
+     target_residues_phi_stack.push([293, -64])
+     target_residues_phi_stack.push([294, -90])
+
+     target_residues_psi_stack.push([291,122])
+     target_residues_psi_stack.push([292,-35])
+     target_residues_psi_stack.push([293,147])
+
+     constr_residues_phi_stack.push(([295, 296]))
+     constr_residues_psi_stack.push(([295, 296]))
+ 
+
+     printStacks()
+
+
   }

@@ -1,7 +1,0 @@
-split data 70:30
-70 trian 30 test
-split these into 5 'folds'
-for each fold
-	train each models hyper paramets and print the accuarcy output 
-	append the accuracy achieved by the fold to a list
-compute the median accuracy 

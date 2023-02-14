@@ -3,6 +3,7 @@ window.onload = function () {
 }
 
 function setup(){
+    alert("loaded body")
     var jmolAppletX;
 
     var Info = {

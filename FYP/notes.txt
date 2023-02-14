@@ -4,7 +4,7 @@ jmolApplet1._loadFile("=pdbid")
 
 program writealine(output); begin writeln('Hello World') end.
 
-new file writealin.c
+
 
 
 pdbcode='1adg';
@@ -47,3 +47,19 @@ constr_residues_psi=[294 295];
 n_iter=10000;
 Loop_Modeller2_wrapper('1adg','LADH_loopmovement.pdb','A',290,301,[291 -90; 292 -110; 293 -64; 294 -90],[291 122; 292 -35; 293 147],[295 296] ,10000)
 matlab -nodisplay -nojvm -r  "Loop_Modeller2_wrapper('1adg','LADH_loopmovement.pdb','A',290,301,[291 -90 ; 292 -110; 293 -64; 294 -90],[291 122; 292 -35; 293 147],[295 296],[294 295],10000);exit;";
+
+
+questions:
+
+Do all the atoms lableled as backbone in a pdb file treatable with an algorithm to find torsion angles. 
+ 
+does the algorithm to find a torsion angle's from the corrdinateds of sequential backbone atoms need to the four atoms to be ["N", "CA", "C", "O"]; what is someone selects 10 atoms in the chain
+
+get the atoms from
+
+Jmol.getPropertyAsArray(jmolApplet0, 
+Jmol.getPropertyAsArray(jmolApplet0, "chainInfo").models[0].chains[0].residues[0].atomInfo1
+Jmol.getPropertyAsArray(jmolApplet0, "atomInfo")
+Jmol.getPropertyAsArray(jmolApplet0, polymerInfo)
+
+question does the algorithm accept angle values that arn't intergers? need to know for the naming convention
