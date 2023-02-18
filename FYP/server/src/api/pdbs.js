@@ -11,7 +11,7 @@ const { exec } = require("child_process");
 const matlab = require("node-matlab");
 const { json } = require('express');
 
-
+let matlab_installed=false;
 
 //schmea example '1adg','LADH_loopmovement.pdb','A',290,301,[291 , -90; 292 , -110; 293 , -64; 294 , -90],[291 122; 292 -35; 293 147],[295 296],[295 296] ,10000
 const schema = Joi.object({
@@ -76,6 +76,8 @@ router.post('/', async (req, res, next) => {
             console.log(result)
             //refer to page
            // window.location.replace("http://www.w3schools.com");
+            cmd_str = `${std_name} `
+            await runMatlabCmd(cmd_str);
             const inserted = await pdbs.insert(value);
             res.json(inserted);
             console.log("not in DB")
@@ -112,6 +114,8 @@ async function runMatlabScript(scriptPath, ...args) {
   }
 
   function genStandardFileName(json_obj){
+    console.log(json_obj)
+
     res="PDBID_"
     res=res+json_obj.pdb_id.toUpperCase()
     res=res+`_CHAIN_${json_obj.chain}`
@@ -119,33 +123,73 @@ async function runMatlabScript(scriptPath, ...args) {
     res=res+json_obj.segbeg
     res=res+"_END_"
     res=res+json_obj.segend
-    res=res+"_PHITARGS_"
+    res=res+"_PHITARGS"
     console.log(json_obj.target_residues_phi.length)
     console.log(json_obj.target_residues_phi[1].length)
-    for(let i=0;i<json_obj.target_residues_phi.lengthl;i++){
-        res=res+`_${json_obj.target_residues_phi[i][0]}_${json_obj.target_residues_phi[i][1]}`
-        console.log(`_${json_obj.target_residues_phi[i][0]}_${json_obj.target_residues_phi[i][1]}`)
+    for(let i=0;i<json_obj.target_residues_phi.length;i++){
+        res=res+"_"+json_obj.target_residues_phi[i][0]+"_"+json_obj.target_residues_phi[i][1]
+        //console.log(`_${json_obj.target_residues_phi[i][0]}_${json_obj.target_residues_phi[i][1]}`)
     }
     
     //res=res+String(json_obj.target_residues_phi).replace(",", "_");
-    res=res+"_PSITARGS_"
-    for(let i=0;i<json_obj.target_residues_psi.lengthl;i++){
-        res=res+`_${json_obj.target_residues_psi[i][0]}_${json_obj.target_residues_psi[i][1]}`
+    res=res+"_PSITARGS"
+    console.log(json_obj.target_residues_psi.length)
+    for(let i=0;i<json_obj.target_residues_psi.length;i++){
+        console.log( "value "+json_obj.target_residues_psi[i][0])
+        res=res+"_"+json_obj.target_residues_psi[i][0]+"_"+json_obj.target_residues_psi[i][1]
+        //console.log(`_${json_obj.target_residues_psi[i][0]}_${json_obj.target_residues_psi[i][1]}`)
     }
     console.log(json_obj.target_residues_psi[0][0])
    //res=res+String(json_obj.target_residues_psi).replace(",", "_");
-    res=res+"_PHICONSTR_"
-    for(let i=0;i<json_obj.constr_residues_phi.lengthl;i++){
-       res=res+`_${json_obj.constr_residues_phi[i][0]}_${json_obj.constr_residues_phi[i][1]}`
+    res=res+"_PHICONSTR"
+    for(let i=0;i<json_obj.constr_residues_phi.length;i++){
+       res=res+"_"+json_obj.constr_residues_phi[i][0]+"_"+json_obj.constr_residues_phi[i][1]
     }
+    
    //res=res+String(json_obj.constr_residues_phi).replace(",", "_");
-    res=res+"_PSICONSTR_"
-    for(let i=0;i<json_obj.constr_residues_psi.lengthl;i++){
-        res=res+`_${json_obj.constr_residues_psi[i][0]}_${json_obj.constr_residues_psi[i][1]}`
+    res=res+"_PSICONSTR"
+    for(let i=0;i<json_obj.constr_residues_psi.length;i++){
+        res=res+"_"+json_obj.constr_residues_psi[i][0]+"_"+json_obj.constr_residues_psi[i][1]
     }
    // res=res+String(json_obj.constr_residues_psi).replace(",", "_");
-    res=res+`_ITTR_${json_obj.itterations}`
+    res=res+"_ITTR_"+json_obj.itterations
+    console.log(res)
     return res
+    }
+
+
+
+async function isMatlabInstalled() {
+    let command;
+      
+    if (process.platform === 'win32') {
+      command = 'where matlab';
+    } else {
+      command = 'which matlab';
+    }      
+    try {
+      await exec(command);
+      matlab_installed=true;
+      return true;
+      
+    } catch (error) {
+    matlab_installed=false;
+      return false;
+     
+    }
   }
 
+async function runMatlabCmd(cmdString) {
+
+    "matlab -nodisplay -nojvm -r "  + "cd C:/Users/sluke/Documents/GitHub/FYP/FYP/TAT_Matlabcode/;"+ " wrapper_loop_modeller2('1adg','LADH_loopmovement.pdb','A',290,301,[291 -90 ; 292 -110; 293 -64; 294 -90],[291 122; 292 -35; 293 147],[295 296],[294 295],10000);exit;";
+}
+
+
+ //it can be async but await makes it sequential
+async function init(){
+    res= await isMatlabInstalled()
+    console.log("Matlab installed: "+res)
+}
+
+init()
 module.exports = router;
