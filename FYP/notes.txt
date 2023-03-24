@@ -63,3 +63,32 @@ Jmol.getPropertyAsArray(jmolApplet0, "atomInfo")
 Jmol.getPropertyAsArray(jmolApplet0, polymerInfo)
 
 question does the algorithm accept angle values that arn't intergers? need to know for the naming convention
+
+matlab -nodisplay -nojvm -r  "wrapper_loop_modeller2('1adg','LADH_loopmovement.pdb','A',290,301,[291 -90 ; 292 -110; 293 -64; 294 -90],[291 122; 292 -35; 293 147],[295 296],[294 295],10000);exit;";
+
+3load 1adg load http://localhost:5123/public/OutputPDBS/LADH_loopmovement.pdb super
+
+Jmol.script(jmolApplet0, "load pdb1.pdb");
+
+// Load the second PDB file and append it to the first one
+Jmol.script(jmolApplet0, "load append pdb2.pdb");
+
+// Color the second PDB file orange
+Jmol.script(jmolApplet0, "select all; color orange");
+
+load files "=1adg" "http://localhost:5123/public/OutputPDBS/LADH_loopmovement.pdb" select protein and 2.1; cartoon; color cornflowerblue;
+
+
+select * and 1.1 ; color orange
+
+
+todo
+
+cartoon tube view of protein segment
+print atom coods for loop segement 
+play / pause step anim for animated pdb
+check in db, if not in db run script and copy pdb to output folder
+load a pdb from output folder
+super impose og with generated, 
+animated super imposed ontop of og 
+calculate inital torsions from selection 

@@ -146,8 +146,8 @@ async function submit_to_server(){
         "constr_residues_psi" : constr_residues_psi_stack,
         "itterations" : itterations
       }
-    //  console.log(obj)
-
+      console.log("client side obj : " + obj)
+      console.log(obj)
       fetch('http://localhost:5123/api/v1/pdbs/', {
         method: 'POST',
         headers: {
@@ -159,21 +159,7 @@ async function submit_to_server(){
         .then(res => console.log(res));
       
     }
-   /*
-    var ajax_req = new XMLHttpRequest();
 
-    ajax_req.onreadystatechange = function(){
-        if(this.readyState == 4 && this.status == 200){
-            //jmolApplet1._loadFile("=2arp")
-            //console.log("ncwhjfkjnwefclkwxnnxnxnxnxnxnxnx")
-            listen_for_file(output_fname);
-        }
-    }
-    ajax_req.open('GET', 'index.php?pdb_id='+pdb_id+"&output_fname="+output_fname
-    +"&chain="+chain+"&segbeg="+segbeg+"&segend="+segend+"&targ_phi="+target_residues_phi
-    +"&targ_psi="+target_residues_psi+"&constr_phi="+constr_residues_phi+"&constr_psi="+constr_residues_psi+"&itterations="+itterations,true )
-    ajax_req.send()
-*/
 }
 
 const url = 'localhost:8000/index.php'; //A local page
@@ -335,6 +321,10 @@ async function listen_for_file(fname) {
      document.getElementById("itterations").value =10000;
 
 
+    target_residues_phi_stack =  [];
+    target_residues_psi_stack = [];
+    constr_residues_phi_stack = [];
+    constr_residues_psi_stack = [];
 
      target_residues_phi_stack.push([291, -90])
      target_residues_phi_stack.push([292, -110])
@@ -351,5 +341,60 @@ async function listen_for_file(fname) {
 
      printStacks()
 
-
   }
+function jmol_isReady(){
+console.log("jmol is redy")
+
+beg=Number.parseInt(document.getElementById("segbeg").value)
+end=Number.parseInt(document.getElementById("segend").value)
+
+console.log(Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo"))
+var phis=[]
+var psis=[]
+var torsions=[]
+
+console.log("beg "+ beg+ " end " + end)
+if (!(beg >0)){
+  beg=beg-1
+}
+for(i=beg;i<=end;i++){
+  console.log("getting phi psi")
+  phis.push(Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0].polymers[0].monomers[i].phi)
+  psis.push(Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0].polymers[0].monomers[i].psi)
+  torsions.push(Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0].polymers[0].monomers[i].phi)
+  torsions.push(Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0].polymers[0].monomers[i].psi)
+
+  
+}
+console.log("finshed loop ")
+document.getElementById("show_initial").style.setProperty("visibility" , "visible")
+document.getElementById("show_initial1").style.setProperty("visibility" , "visible")
+document.getElementById("show_tors").style.setProperty("visibility" , "visible")
+
+document.getElementById("intial_phis").innerHTML=phis
+document.getElementById("intial_psis").innerHTML=psis
+document.getElementById("intial_tosions").innerHTML=torsions
+
+
+}
+
+function show_initial_torsions(){
+  beg=Number.parseInt(document.getElementById("segbeg").value)
+  end=Number.parseInt(document.getElementById("segend").value)
+  pdbid=document.getElementById("pdb_txt_input").value
+  console.log(pdbid)
+  var JmolInfo = {
+    width: 600,
+    height: 600,
+    //serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
+    use: "HTML5",
+    readyFunction: jmol_isReady,
+    script: "load="+pdbid 
+    //script:"load http://localhost:5123/public/1crn.pdb"
+  }
+  document.getElementById("appdiv").innerHTML = Jmol.getAppletHtml(
+    "jmolApplet0",
+    JmolInfo
+);
+    Jmol.script("jmolApplet0",  "select backbone and (resno >="+ beg+ " and resno <= "+end+")")
+}

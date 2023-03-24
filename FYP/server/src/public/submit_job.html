@@ -7,47 +7,83 @@
     <link rel="stylesheet" type="text/css" href="styles.css" />
     <title>submit job</title>
     <script type="text/javascript" src="script.js"></script>
+     <script type="text/javascript" src="JSmol.min.js"></script>
+    <script type="text/javascript" src="js/JSmolJME.js"></script>
+    <script type="text/javascript" src="jsme/jsme/jsme.nocache.js"></script>
 </head>
 <body>
     <ul>
         <li><a href="submit_job.html">Submit Job</a></li>
         <li><a href="browse_structers.html">Browse database</a></li>
+        <li><a href="jsmol/aaaatest.html">Structure viewer</a></li>
     </ul>
 
     
     <div id="applet1"></div> 
-
+    <acronym title="PDBID">
     <input id="pdb_txt_input" type="text" value="PDB_ID" />
+    </acronym>
+
+    <acronym title="file name (unused)">
     <input id="fname" type="text" value="output file name" />
-    <input id="chain" type="text" value="chain" />
+    </acronym>
+
+    <acronym title="chain">
+    <input id="chain" type="text" value="A" />
+    </acronym>
+
+    <acronym title="start of loop amino acid index">
     <input id="segbeg" type="number" value="segbeg" />
-    <input id="segend" type="number" value="segend" />
-    <!--
-    <input id="target_residues_phi" type="text" value="target_residues_phi" />
-    <input id="target_residues_psi" type="text" value="target_residues_psi" />
-    <input id="constr_residues_phi" type="text" value="constr_residues_phi" />
-    <input id="constr_residues_psi" type="text" value="constr_residues_psi" />
-    -->
-    <input id="itterations" type="number" value="itterations" />
-    
+    </acronym>
+
+    <acronym title="end of loop amino acid index">
+        <input id="segend" type="number" value="segend" />
+    </acronym>
+
+    <button onclick="show_initial_torsions()" id="show_torsion_btn">Show Initial Torsions</button>
+    <p id="show_initial">Inital Phi torsions</p>
+    <p id="intial_phis"></p>
+    <p id="show_initial1">Inital Psi torsions</p>
+    <p id="intial_psis"></p>
+    <p id="show_tors">Combined torsions</p>
+    <p id="intial_tosions"></p>
+
+    <div id="appdiv"></div>
+<acronym title="The number of itterations">
+    <input id="itterations" type="number" value="10000" />
+</acronym>
+<br>
+<acronym title="amnio acid index of phi target">
     <input type="number"  id="target_residues_phi_idx" name="target_residues_phi_idx"  value=""/>
+</acronym>
+<acronym title="phi target value">
     <input type="number"  id="target_residues_phi_value" name="target_residues_phi_value"  value=""/>
+</acronym>
+
     <button onclick="add_target_phi()" id="add_target_residues_phi">add target phi</button>
     <button onclick="remove_target_phi()" id="add_target_residues_phi">remove target phi</button>
     <p id="target_phi_string"></p>
-
+    <acronym title="amnio acid index of psi target">
     <input type="number"  id="target_residues_psi_idx" name="target_residues_psi_idx"  value=""/>
+</acronym>
+<acronym title="psi target value">
     <input type="number"  id="target_residues_psi_value" name="target_residues_psi_value"  value=""/>
+</acronym>
+
     <button onclick="add_target_psi()" id="add_target_residues_psi">add target psi</button>
     <button onclick="remove_target_psi()" id="add_target_residues_psi">remove target psi</button>
     <p id="target_psi_string"></p>
-
+    <acronym title="constrain phi at this amnio acid index ">
     <input type="number"  id="constr_residues_phi" name="constr_residues_phi"  value=""/>
+</acronym>
+
     <button onclick="add_constr_phi()" id="add_constr_residues_phi">add contrain phi</button>
     <button onclick="remove_constr_phi()" id="add_constr_residues_phi">remove contrain phi</button>
     <p id="constr_residues_phi_string"></p>
-
+    <acronym title="constrain psi at this amnio acid index ">
     <input type="number"  id="constr_residues_psi" name="constr_residues_psi"  value=""/>
+</acronym>
+
     <button  onclick="add_constr_psi()" id="add_constr_residues_psi">add contrain psi</button>
     <button  onclick="remove_constr_psi()" id="add_constr_residues_psi">remove contrain psi</button>
     <p id="constr_residues_psi_string"></p>

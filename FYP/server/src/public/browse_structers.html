@@ -7,15 +7,38 @@
     <link rel="stylesheet" type="text/css" href="styles.css" />
     <title>browse</title>
     <script type="text/javascript" src="script.js"></script>
-    <script src="./jsmol/JSmol.min.js"></script>
+    <script type="text/javascript" src="JSmol.min.js"></script>
+    <script type="text/javascript" src="js/JSmolJME.js"></script>
+    <script type="text/javascript" src="jsme/jsme/jsme.nocache.js"></script>
 
 </head>
 <body>
     <ul>
         <li><a href="submit_job.html">Submit Job</a></li>
         <li><a href="browse_structers.html">Browse database</a></li>
+        <li><a href="jsmol/aaaatest.html">Structure viewer</a></li>
+
+
     </ul>
+    <script>
+        window.onload = function() {
+        var JmolInfo = {
+            width: 600,
+            height: 600,
+            serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
+            use: "HTML5",
+            script: "load=1adg"
+        }
+      
+        document.getElementById("appdiv").innerHTML = Jmol.getAppletHtml(
+            "jmolApplet0",
+            JmolInfo
+        );
+
+    };
+    </script>
+    <div id="appdiv"></div>
+
 </body>
 
-<script>jmolApplet(400, "load 1adh.pdb", "0");</script>
 </html>

@@ -7,3 +7,14 @@ ul {
 #error_info{
    visibility: hidden;
 }
+
+#show_initial{
+  visibility: hidden;
+}
+
+#show_initial1{
+  visibility: hidden;
+}
+#show_tors{
+  visibility: hidden;
+}

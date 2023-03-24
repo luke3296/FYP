@@ -19,6 +19,13 @@
     </style>
 </head>
 <body>
+
+  <ul>
+    <li><a href="./../submit_job.html">Submit Job</a></li>
+    <li><a href="./../browse_structers.html">Browse database</a></li>
+    <li><a href="aaaatest.html">Structure viewer</a></li>
+</ul>
+
     <div id="appdiv"></div>
     <div id="controls">
     <input type="button" id="load2model" value="Load Model">
@@ -67,6 +74,35 @@
         );
 
     };
+//matlab -nodisplay -nojvm -r  "wrapper_loop_modeller2('1adg','LADH_loopmovement.pdb','A',290,301,[291 -90 ; 292 -110; 293 -64; 294 -90],[291 122; 292 -35; 293 147],[295 296],[294 295],10000);exit;"
+    function setDefault(){
+      pdbid='1adg'
+      fname='LADH_loop_movement.pdb'
+      chain='A'
+      segb=290
+      sege=301
+      //291 -90 ; 292 -110; 293 -64; 294 -90]
+      phitargs=[]
+      phitargs.append([291,-90])
+      phitargs.append([292, -110])
+      phitargs.append([293, -64])
+      phitargs.append([294, -90])
+      //[291 122; 292 -35; 293 147]
+      psitargs=[]
+      psitargs.append([291, 122])
+      psitargs.append([292, -35])
+      psitargs.append([293 , 147])
+      //[295 296]
+      phiconstr=[295,  296]
+      //[294 295]
+      psiconstr=[294 , 295]
+
+      itter=10000
+
+      document.getElementById("pdbcode_input").value = pdbid
+
+
+    }
 
     function load_pdb() {
         console.log("clicked" + jmolApplet0);
@@ -94,6 +130,13 @@
     function print_atoms() {
     var start = document.getElementById("start").value;
     var end = document.getElementById("end").value;
+    console.log(Jmol.getPropertyAsArray(jmolApplet0, "chainInfo").models[0].chains[0].residues)
+    console.log(Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0])
+    console.log(start + " "+ end)
+    for(i=start-1;i<end;i=i+1){
+      console.log()
+    }
+
     Jmol.script(jmolApplet0, "console.log(modelView('" + start + "-" + end + "', {atomsOnly: true}));");
   }
 //doesnt work
@@ -116,9 +159,6 @@ function getBackboneCoordinates(jmolApplet) {
     var end = document.getElementById("end").value;
     var atomInfo = Jmol.getPropertyAsArray(jmolApplet0, "atomInfo")
     console.log(atomInfo)
-
-
-
   // Initialize an empty array to store the backbone atom coordinates
   var backboneCoords = [];
 

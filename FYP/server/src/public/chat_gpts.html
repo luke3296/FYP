@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JSmol Example</title>
+    <script type="text/javascript" src="https://chemapps.stolaf.edu/jmol/jsmol/JSmol.min.js"></script>
+  </head>
+  <body>
+    <h1>JSmol Example</h1>
+    <p>This page uses a JSmol applet to display a PDB structure loaded by its PDB ID.</p>
+    <div id="jmolApplet"></div>
+    <form>
+      <select id="visualization">
+        <option value="cartoon">Cartoon</option>
+        <option value="sticks">Sticks</option>
+        <option value="balls">Balls and Sticks</option>
+      </select>
+      <input type="button" value="Update" onclick="updateVisualization();" />
+    </form>
+    <script type="text/javascript">
+      var jmolApplet;
+      jmolApplet = Jmol.getApplet("jmolApplet", {
+        width: 500,
+        height: 500,
+        color: "#F0F0F0",
+        j2sPath: "https://chemapps.stolaf.edu/jmol/jsmol/j2s",
+        serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
+        script: "load pdb:id 1ubq",
+        disableJ2SLoadMonitor: true
+      });
+
+      function updateVisualization() {
+        var visualization = document.getElementById("visualization").value;
+        jmolApplet.script("select all; cartoon off; " + visualization + ";");
+      }
+    </script>
+  </body>
+</html>
