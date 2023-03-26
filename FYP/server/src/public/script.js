@@ -156,7 +156,10 @@ async function submit_to_server(){
         },
         body: JSON.stringify(obj)
         }).then(res => res.json())
-        .then(res => console.log(res));
+        .then(res => {
+          console.log(res)
+          if(res.)
+        });
       
     }
 
@@ -364,7 +367,6 @@ for(i=beg;i<=end;i++){
   torsions.push(Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0].polymers[0].monomers[i].phi)
   torsions.push(Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0].polymers[0].monomers[i].psi)
 
-  
 }
 console.log("finshed loop ")
 document.getElementById("show_initial").style.setProperty("visibility" , "visible")

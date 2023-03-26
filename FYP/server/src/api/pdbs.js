@@ -19,6 +19,12 @@ db.then(() => {
   console.log('no server')
 })
 
+async function checkRecordExists(propertyName, propertyValue) {
+  const query = { [propertyName]: propertyValue };
+  const result = await pdbs.findOne(query);
+  return result !== null;
+}
+
 let matlab_installed=false;
 
 //schmea example '1adg','LADH_loopmovement.pdb','A',290,301,[291 , -90; 292 , -110; 293 , -64; 294 , -90],[291 122; 292 -35; 293 147],[295 296],[295 296] ,10000
@@ -59,8 +65,18 @@ router.get('/:id',  (req, res, next) => {
 
 //post one
 router.post('/', async (req, res, next) => {
-  insert2db(req.body)
-  res.json("submitted")
+  result=await checkRecordExists("fname", req.body.fname)
+  if(result == false){
+    //not in DB
+    insert2db(req.body)
+  }else{
+    //in DB
+    res.json({"redirectUrl" : process.env.HOST+"/public/api/v1/pdbs/"+req.body.fname})
+  }
+  
+  console.log("res")
+  console.log(result)
+  //res.json({"res" : result})
 });
 
 async function insert2db(obj){
