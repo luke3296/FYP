@@ -158,7 +158,7 @@ async function submit_to_server(){
         }).then(res => res.json())
         .then(res => {
           console.log(res)
-          if(res.)
+          //if(res.)
         });
       
     }
@@ -218,8 +218,9 @@ async function listen_for_file(fname) {
         resolve('error');
         });
     });
- 
   }
+
+
 //matlab -nodisplay -nojvm -r  "Loop_Modeller2_wrapper('1adg','LADH_loopmovement.pdb','A',290,301,[291 -90 ; 292 -110; 293 -64; 294 -90],[291 122; 292 -35; 293 147],[295 296],[294 295],10000);exit;"
   function validateInput(pdb_id, fname, chain, segbeg, segend, itterations ){
     // is pdb_id a 4 character string
@@ -282,7 +283,7 @@ async function listen_for_file(fname) {
         document.getElementById("error_info").style.visibility = "visible"
   }
 
-  function printStacks(){
+function printStacks(){
 
     targ_phi_str = "";
     targ_psi_str = "";

@@ -1,69 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>JSmol Example</title>
-    <script type="text/javascript" src="JSmol.min.js"></script>
-    <script type="text/javascript" src="js/JSmolJME.js"></script>
-    <script type="text/javascript" src="jsme/jsme/jsme.nocache.js"></script>
-    <style>
-      #appdiv {
-        float: left;
-      }
-  
-      #controls {
-        float: right;
-        margin-left: 10px;
-      }
-  
-    </style>
-</head>
-<body>
-
-  <ul>
-    <li><a href="./../submit_job.html">Submit Job</a></li>
-    <li><a href="./../browse_structers.html">Browse database</a></li>
-    <li><a href="aaaatest.html">Structure viewer</a></li>
-</ul>
-
-    <div id="appdiv"></div>
-    <div id="controls">
-    <input type="button" id="load2model" value="Load Model">
-    <input type="text" id="pdbcode_input">
-    <br>
-    <br>
-    <input type="button" id="Rotate" value="Rotate">
-    <br>
-    <br>
-    <input type="button" id="ResetView" value="Reset View">
-    <br>
-    <br>
-    Start:
-    <input type="number" id="start" min="0" max="500">
-    End:
-    <input type="number" id="end" min="0" max="500">
-    <br>
-    <br>
-    <input type="button" id="Highlight segment" value="Highlight segment">
-    <br>
-    <br>
-    <input type="button" id="PrintAtoms" value="Print Atom Coordinates">
-    <br>
-    <br>
-    <input type="button" id="Calculate Torsion Angles" value="Calculate Torsion Angles">
-    <br>
-    <br>
-    <input type="text" id="cmd_str">
-    <input type="button" id="run_cmd" value="Run Command">
-    </div>
-</body>
-
-<script>
-    window.onload = function() {
+window.onload = function() {
         var JmolInfo = {
             width: 600,
             height: 600,
-            serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
+            //serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
             use: "HTML5",
             script: "load=1adg"
         }
@@ -175,7 +114,7 @@ function getBackboneCoordinates(jmolApplet) {
   return backboneCoords;
 }
 
-    document.getElementById("run_cmd").addEventListener("click", run_jmol_script);
+  //  document.getElementById("run_cmd").addEventListener("click", run_jmol_script);
 
     document.getElementById("Calculate Torsion Angles").addEventListener("click", calculate_torsion_angles);
 
@@ -188,6 +127,3 @@ function getBackboneCoordinates(jmolApplet) {
     document.getElementById("ResetView").addEventListener("click", reset_view)
 
     document.getElementById("Highlight segment").addEventListener("click", highlight)
-  </script>
-
-</html>

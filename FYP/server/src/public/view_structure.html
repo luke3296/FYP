@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>View Structure</title>
+    <script type="text/javascript" src="view_structure.js"></script>
+    <script type="text/javascript" src="JSmol.min.js"></script>
+    <script type="text/javascript" src="js/JSmolJME.js"></script>
+    <script type="text/javascript" src="jsme/jsme/jsme.nocache.js"></script>
+    <style>
+      #appdiv {
+        float: left;
+      }
+  
+      #controls {
+        float: right;
+        margin-left: 10px;
+      }
+  
+    </style>
+</head>
+<body>
+
+  <ul>
+    <li><a href="./submit_job.html">Submit Job</a></li>
+    <li><a href="./browse_structers.html">Browse database</a></li>
+    <li><a href="./view_structure.html">Structure viewer</a></li>
+</ul>
+
+    <div id="appdiv"></div>
+    <div id="controls">
+    <input type="button" id="load2model" value="Load Model">
+    <input type="text" id="pdbcode_input">
+    <br>
+    <br>
+    <input type="button" id="Rotate" value="Rotate">
+    <br>
+    <br>
+    <input type="button" id="ResetView" value="Reset View">
+    <br>
+    <br>
+    Start:
+    <input type="number" id="start" min="0" max="500">
+    End:
+    <input type="number" id="end" min="0" max="500">
+    <br>
+    <br>
+    <input type="button" id="Highlight segment" value="Highlight segment">
+    <br>
+    <br>
+    <input type="button" id="PrintAtoms" value="Print Atom Coordinates">
+    <br>
+    <br>
+    <input type="button" id="Calculate Torsion Angles" value="Calculate Torsion Angles">
+    <br>
+    <br>
+    <input type="text" id="cmd_str">
+    <input type="button" id="run_cmd" value="Run Command">
+    </div>
+</body>
+
+
+
+</html>

@@ -9,8 +9,11 @@ const pdbs = db.get('pdbs');
 const fs = require("fs");
 const { exec , spawn} = require("child_process");
 
+
 const matlab = require("node-matlab");
 const { json } = require('express');
+const { resolve } = require('path');
+const path = require('path');
 let useBash=false
 
 db.then(() => {
@@ -25,7 +28,6 @@ async function checkRecordExists(propertyName, propertyValue) {
   return result !== null;
 }
 
-let matlab_installed=false;
 
 //schmea example '1adg','LADH_loopmovement.pdb','A',290,301,[291 , -90; 292 , -110; 293 , -64; 294 , -90],[291 122; 292 -35; 293 147],[295 296],[295 296] ,10000
 const schema = Joi.object({
@@ -35,8 +37,8 @@ const schema = Joi.object({
     segbeg: Joi.number().integer().required(),
     segend: Joi.number().integer().required(),
     chain: Joi.string().trim().required(),
-    target_residues_phi: Joi.array().items(Joi.array().items(Joi.number().integer())).required(),
-    target_residues_psi: Joi.array().items(Joi.array().items(Joi.number().integer())).required(),
+    target_residues_phi: Joi.array().items(Joi.array().items(Joi.number().integer())),
+    target_residues_psi: Joi.array().items(Joi.array().items(Joi.number().integer())),
     constr_residues_phi: Joi.array().items(Joi.number().integer()),
     constr_residues_psi: Joi.array().items(Joi.number().integer()),
     itterations: Joi.number().integer()
@@ -58,9 +60,21 @@ try {
 
 //read one
 router.get('/:id',  (req, res, next) => {
-    res.json({
-        msg: 'Hello read one'
-    });
+  console.log("get one "+ req.params.id );
+  ret_str=process.env.HOST+"/public/OutputPDBS/"+req.body.fname
+  console.log(ret_str);
+  const filePath = path.join(process.env.PDB_OUT_DIR,  req.body.fname);
+  console.log("fpath " + filePath);
+  try {
+    if (fs.existsSync(filePath)) {
+      //if the file exsists send the link to it
+      res.send(ret_str);
+    } else {
+      res.send(false);
+    }
+  } catch (err) {
+    //console.error(err);
+  }
 });
 
 //post one
@@ -69,9 +83,11 @@ router.post('/', async (req, res, next) => {
   if(result == false){
     //not in DB
     insert2db(req.body)
+    res.json({"redirectUrl" : false})
+
   }else{
     //in DB
-    res.json({"redirectUrl" : process.env.HOST+"/public/api/v1/pdbs/"+req.body.fname})
+    res.json({"redirectUrl" : process.env.HOST+"/public/OutputPDBS/"+req.body.fname})
   }
   
   console.log("res")
@@ -116,13 +132,12 @@ async function insert2db(obj){
         const inserted = await pdbs.insert(value);
         //res.json(inserted);
     }
-    
-   
     //res.json(inserted);
 } catch (error) {
     console.log(error)
 }
 }
+
 async function runMatlabScript(scriptPath, ...args) {
     
    
@@ -189,25 +204,24 @@ async function runMatlabScript(scriptPath, ...args) {
 
 
 
-async function isMatlabInstalled() {
-    let command;
-      
-    if (process.platform === 'win32') {
-      command = 'where matlab';
-    } else {
-      command = 'which matlab';
-    }      
-    try {
-      await exec(command);
-      matlab_installed=true;
-      return true;
-      
-    } catch (error) {
-    matlab_installed=false;
-      return false;
-     
+  async function isMatlabInstalled() {
+      let command;
+      if (process.platform === 'win32') {
+        command = 'where matlab';
+      } else {
+        command = 'which matlab';
+      }      
+      return new Promise((resolve, reject) => {
+        exec(command, (err, stdout, stderr) => {
+          if (err == null){
+            console.log("err is null")
+            resolve(stdout);
+          } else {
+            resolve(false);
+          }
+        });
+      });
     }
-  }
 
 async function runMatlabCmd(cmdString) {
 
