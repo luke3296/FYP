@@ -27,7 +27,7 @@ function add_target_phi() {
 		target_residues_phi_stack.push([phi_idx, phi_val]);
 		printStacks();
 	}
-}
+} 
 
 function remove_target_phi() {
 	target_residues_phi_stack.pop();
@@ -114,7 +114,6 @@ async function submit_to_server() {
 		console.log("send json");
 		obj = {
 			"pdb_id": pdb_id,
-			"fname": output_fname,
 			"chain": chain,
 			"segbeg": segbeg,
 			"segend": segend,
@@ -124,20 +123,34 @@ async function submit_to_server() {
 			"constr_residues_psi": constr_residues_psi_stack,
 			"itterations": itterations
 		}
-        console.log(obj)
+		std_fname=genStandardFileName(obj)
+		snd_obj = {
+			"pdb_id": pdb_id,
+			"fname" : std_fname,
+			"chain": chain,
+			"segbeg": segbeg,
+			"segend": segend,
+			"target_residues_phi": target_residues_phi_stack,
+			"target_residues_psi": target_residues_psi_stack,
+			"constr_residues_phi": constr_residues_phi_stack,
+			"constr_residues_psi": constr_residues_psi_stack,
+			"itterations": itterations
+		}
+        //console.log(obj)
 		fetch('http://localhost:5123/api/v1/pdbs/', {
 				method: 'POST',
 				headers: {
 					'Accept': 'application/json, text/plain, */*',
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify(obj)
+				body: JSON.stringify(snd_obj)
 			}).then(res => res.json())
 			  .then(res => {
                 if(res.redirectUrl == false){
                     alert("no file found check back in abit")
                 }else{
-				    console.log(res)
+				    console.log(res.redirectUrl)
+					
                 }
 				//if(res.)
 			});
@@ -256,8 +269,11 @@ function setDefault() {
 	target_residues_psi_stack.push([292, -35])
 	target_residues_psi_stack.push([293, 147])
 
-	constr_residues_phi_stack.push(([295, 296]))
-	constr_residues_psi_stack.push(([295, 296]))
+	constr_residues_phi_stack.push(295)
+	constr_residues_phi_stack.push(296)
+
+	constr_residues_psi_stack.push(295)
+	constr_residues_psi_stack.push(296)
 
 	printStacks()
 
@@ -317,3 +333,48 @@ function show_initial_torsions() {
 	);
 	Jmol.script("jmolApplet0", "select backbone and (resno >=" + beg + " and resno <= " + end + ")")
 }
+
+function genStandardFileName(json_obj){
+    //console.log(json_obj)
+
+    res="PDBID_"
+    res=res+json_obj.pdb_id.toUpperCase()
+    res=res+`_CHAIN_${json_obj.chain}`
+    res=res+"_BEG_"
+    res=res+json_obj.segbeg
+    res=res+"_END_"
+    res=res+json_obj.segend
+    res=res+"_PHITARGS"
+    //console.log(json_obj.target_residues_phi.length)
+    //console.log(json_obj.target_residues_phi[1].length)
+    for(var i=0;i<json_obj.target_residues_phi.length;i++){
+        res=res+"_"+json_obj.target_residues_phi[i][0]+"_"+json_obj.target_residues_phi[i][1]
+        //console.log(`_${json_obj.target_residues_phi[i][0]}_${json_obj.target_residues_phi[i][1]}`)
+    }
+    
+    //res=res+String(json_obj.target_residues_phi).replace(",", "_");
+    res=res+"_PSITARGS"
+    //console.log(json_obj.target_residues_psi.length)
+    for(var i=0;i<json_obj.target_residues_psi.length;i++){
+        //console.log( "value "+json_obj.target_residues_psi[i][0])
+        res=res+"_"+json_obj.target_residues_psi[i][0]+"_"+json_obj.target_residues_psi[i][1]
+        //console.log(`_${json_obj.target_residues_psi[i][0]}_${json_obj.target_residues_psi[i][1]}`)
+    }
+    //console.log(json_obj.target_residues_psi[0][0])
+   //res=res+String(json_obj.target_residues_psi).replace(",", "_");
+   res=res+"_PHICONSTR"
+   for(var i=0;i<json_obj.constr_residues_phi.length;i++){
+	  res=res+"_"+json_obj.constr_residues_phi[i]
+   }
+   
+  //res=res+String(json_obj.constr_residues_phi).replace(",", "_");
+   res=res+"_PSICONSTR"
+   for(var i=0;i<json_obj.constr_residues_psi.length;i++){
+	   res=res+"_"+json_obj.constr_residues_psi[i]
+   }
+   // res=res+String(json_obj.constr_residues_psi).replace(",", "_");
+    res=res+"_ITTR_"+json_obj.itterations
+    //console.log(res)
+	res=res+".pdb"
+    return res
+    }

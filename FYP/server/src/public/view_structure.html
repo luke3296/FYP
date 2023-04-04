@@ -8,7 +8,10 @@
     <script type="text/javascript" src="js/JSmolJME.js"></script>
     <script type="text/javascript" src="jsme/jsme/jsme.nocache.js"></script>
     <style>
-      #appdiv {
+      #appdiv1 {
+        float: left;
+      }
+      #appdiv2 {
         float: left;
       }
   
@@ -27,32 +30,29 @@
     <li><a href="./view_structure.html">Structure viewer</a></li>
 </ul>
 
-    <div id="appdiv"></div>
+    <div id="appdiv1"></div>
+    <div id="appdiv2"></div>
     <div id="controls">
     <input type="button" id="load2model" value="Load Model">
     <input type="text" id="pdbcode_input">
     <br>
-    <br>
     <input type="button" id="Rotate" value="Rotate">
     <br>
-    <br>
     <input type="button" id="ResetView" value="Reset View">
-    <br>
     <br>
     Start:
     <input type="number" id="start" min="0" max="500">
     End:
     <input type="number" id="end" min="0" max="500">
     <br>
-    <br>
     <input type="button" id="Highlight segment" value="Highlight segment">
-    <br>
     <br>
     <input type="button" id="PrintAtoms" value="Print Atom Coordinates">
     <br>
+    <input type="checkbox" id="sync" onchange="Sync()">
     <br>
-    <input type="button" id="Calculate Torsion Angles" value="Calculate Torsion Angles">
-    <br>
+    <input type="text" id="load">
+    <input type="button" onclick="Load()">
     <br>
     <input type="text" id="cmd_str">
     <input type="button" id="run_cmd" value="Run Command">

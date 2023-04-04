@@ -1,18 +1,35 @@
 window.onload = function() {
+
+
+    
         var JmolInfo = {
-            width: 600,
-            height: 600,
+            width: 300,
+            height: 300,
             //serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
             use: "HTML5",
             script: "load=1adg"
         }
       
-        document.getElementById("appdiv").innerHTML = Jmol.getAppletHtml(
+        document.getElementById("appdiv1").innerHTML = Jmol.getAppletHtml(
             "jmolApplet0",
             JmolInfo
         );
 
+        var JmolInfo = {
+          width: 300,
+          height: 300,
+          //serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
+          use: "HTML5",
+          script: "load http://localhost:5123/public/OutputPDBS/PDBID_1ADG_CHAIN_A_BEG_290_END_303_PHITARGS_291_-90_292_-110_293_-64_PSITARGS_291_122_292_-35_PHICONSTR_295_296_PSICONSTR_295_296_ITTR_10000.pdb"
+      }
+    
+      document.getElementById("appdiv2").innerHTML = Jmol.getAppletHtml(
+          "jmolApplet1",
+          JmolInfo
+      );
+
     };
+
 //matlab -nodisplay -nojvm -r  "wrapper_loop_modeller2('1adg','LADH_loopmovement.pdb','A',290,301,[291 -90 ; 292 -110; 293 -64; 294 -90],[291 122; 292 -35; 293 147],[295 296],[294 295],10000);exit;"
     function setDefault(){
       pdbid='1adg'
@@ -114,13 +131,38 @@ function getBackboneCoordinates(jmolApplet) {
   return backboneCoords;
 }
 
+function Sync(){
+  if (document.getElementById("sync").checked == true){
+    Jmol.script(jmolApplet0,'sync * on; sync * "set syncMouse true"')
+  }else{
+    Jmol.script(jmolApplet0,'sync * off')
+  }
+}
+
+async function Load(){
+  val = document.getElementById("load").value
+  console.log(val)
+  data = await getPdb(val)
+  console.log(data)
+  Jmol.script(jmolApplet0, "load "+data.redirectUrl)
+}
+
+  async function getPdb(fname) {
+    const response = await fetch("http://localhost:5123/api/v1/pdbs/", {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: JSON.stringify({ fname : fname })
+    });
+    const data = await response.json();
+    return data;
+  }
+
   //  document.getElementById("run_cmd").addEventListener("click", run_jmol_script);
 
-    document.getElementById("Calculate Torsion Angles").addEventListener("click", calculate_torsion_angles);
 
-    document.getElementById("PrintAtoms").addEventListener("click", print_atoms);
-
-    document.getElementById("load2model").addEventListener("click", load_pdb);
+    //document.getElementById("load2model").addEventListener("click", load_pdb);
 
     document.getElementById("Rotate").addEventListener("click", rotate_model);
 

@@ -48,6 +48,7 @@ const schema = Joi.object({
 const router = express.Router();
 
 //read all
+
 router.get('/', async (req, res, next) => {
 try {
     const records = await pdbs.find({});
@@ -58,8 +59,9 @@ try {
 
 });
 
-//read one
-router.get('/:id',  (req, res, next) => {
+//post one
+//RETURNS FILE PATH IF FILE EXSISTS OR FALSE
+router.post('/:id',  (req, res, next) => {
   console.log("get one "+ req.params.id );
   ret_str=process.env.HOST+"/public/OutputPDBS/"+req.body.fname
   console.log(ret_str);
@@ -78,15 +80,24 @@ router.get('/:id',  (req, res, next) => {
 });
 
 //post one
+//returns file path if file data in db fase otherwise
 router.post('/', async (req, res, next) => {
   result=await checkRecordExists("fname", req.body.fname)
   if(result == false){
     //not in DB
+    //make the file
+    console.log("not in DB")
+
+    //move the file
+    //insert record of file to db
+    runMatlabScript1(process.env.SCRIPT_DIR,genCommand(req.body), genStandardFileName(req.body), process.env.PDB_OUT_DIR)
+
     insert2db(req.body)
     res.json({"redirectUrl" : false})
 
   }else{
     //in DB
+    console.log("in db")
     res.json({"redirectUrl" : process.env.HOST+"/public/OutputPDBS/"+req.body.fname})
   }
   
@@ -115,7 +126,7 @@ async function insert2db(obj){
       //console.log(result)
         
         //run job, return error
-        //res.json({"redirect_str" : std_name})
+        res.json({"redirect_str" : std_name})
         //const inserted = await pdbs.insert(value);
         
     }else{
@@ -124,13 +135,17 @@ async function insert2db(obj){
         //refer to page
        // window.location.replace("http://www.w3schools.com");
         //cmd_str = `${std_name} `
-        runScript(obj).then((em)=>{
-          console.log("resolved promise  "+ em )
-      }, (er)=>{
-          console.log("resolved promise error " + er)
-      });
+
+        
+      //  runScript(obj).then((em)=>{
+      //    console.log("resolved promise  "+ em )
+      //}, (er)=>{
+      //    console.log("resolved promise error " + er)
+      //});
+
+        runMatlabScript1(process.env.SCRIPT_DIR,genCommand(obj), genStandardFileName(obj), process.env.PDB_OUT_DIR)
         const inserted = await pdbs.insert(value);
-        //res.json(inserted);
+        
     }
     //res.json(inserted);
 } catch (error) {
@@ -153,14 +168,32 @@ async function runMatlabScript(scriptPath, ...args) {
     .then((result) => console.log(result))
     .catch((error) => console.log(error));
   
-    
-  
+
     return "result";
+  }
+
+  function runMatlabScript1(dir1, scriptName, fname1, dir2) {
+    const matlabCommand = `matlab -batch ${scriptName}`;
+    console.log(matlabCommand)
+    const moveCommand = `move ${dir1 + fname1} ${dir2}`;
+    console.log(moveCommand)
+    console.log("full command")
+    console.log(`cd ${dir1} && ${matlabCommand} && ${moveCommand}`)
+    exec(`cd ${dir1} && ${matlabCommand} && ${moveCommand}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+    });
   }
 
   function genStandardFileName(json_obj){
     //console.log(json_obj)
-
+    console.log("gen fnmae")
+    console.log(json_obj)
+    console.log(json_obj.constr_residues_phi)
     res="PDBID_"
     res=res+json_obj.pdb_id.toUpperCase()
     res=res+`_CHAIN_${json_obj.chain}`
@@ -171,7 +204,7 @@ async function runMatlabScript(scriptPath, ...args) {
     res=res+"_PHITARGS"
     //console.log(json_obj.target_residues_phi.length)
     //console.log(json_obj.target_residues_phi[1].length)
-    for(let i=0;i<json_obj.target_residues_phi.length;i++){
+    for(var i=0;i<json_obj.target_residues_phi.length;i++){
         res=res+"_"+json_obj.target_residues_phi[i][0]+"_"+json_obj.target_residues_phi[i][1]
         //console.log(`_${json_obj.target_residues_phi[i][0]}_${json_obj.target_residues_phi[i][1]}`)
     }
@@ -179,7 +212,7 @@ async function runMatlabScript(scriptPath, ...args) {
     //res=res+String(json_obj.target_residues_phi).replace(",", "_");
     res=res+"_PSITARGS"
     //console.log(json_obj.target_residues_psi.length)
-    for(let i=0;i<json_obj.target_residues_psi.length;i++){
+    for(var i=0;i<json_obj.target_residues_psi.length;i++){
         //console.log( "value "+json_obj.target_residues_psi[i][0])
         res=res+"_"+json_obj.target_residues_psi[i][0]+"_"+json_obj.target_residues_psi[i][1]
         //console.log(`_${json_obj.target_residues_psi[i][0]}_${json_obj.target_residues_psi[i][1]}`)
@@ -187,18 +220,19 @@ async function runMatlabScript(scriptPath, ...args) {
     //console.log(json_obj.target_residues_psi[0][0])
    //res=res+String(json_obj.target_residues_psi).replace(",", "_");
     res=res+"_PHICONSTR"
-    for(let i=0;i<json_obj.constr_residues_phi.length;i++){
-       res=res+"_"+json_obj.constr_residues_phi[i][0]+"_"+json_obj.constr_residues_phi[i][1]
+    for(var i=0;i<json_obj.constr_residues_phi.length;i++){
+       res=res+"_"+json_obj.constr_residues_phi[i]
     }
     
    //res=res+String(json_obj.constr_residues_phi).replace(",", "_");
     res=res+"_PSICONSTR"
-    for(let i=0;i<json_obj.constr_residues_psi.length;i++){
-        res=res+"_"+json_obj.constr_residues_psi[i][0]+"_"+json_obj.constr_residues_psi[i][1]
+    for(var i=0;i<json_obj.constr_residues_psi.length;i++){
+        res=res+"_"+json_obj.constr_residues_psi[i]
     }
    // res=res+String(json_obj.constr_residues_psi).replace(",", "_");
     res=res+"_ITTR_"+json_obj.itterations
     //console.log(res)
+    res=res+".pdb"
     return res
     }
 
@@ -314,13 +348,14 @@ function Arr2dtoMLstr(arr){
   str='['
   for(let i =0; i<arr.length;i++){
     str=str+ArrtoMLstr(arr[i])
-    if(i==length-1){
+    if(i==arr.length-1){
 
     }else{
       str=str+";"
     }
   }
   str = str+"]"
+  console.log("Arr2dmlst " + str)
   return str
 }
 function ArrtoMLstr(arr){
@@ -350,6 +385,11 @@ async function runScript(obj){
     console.log(`stdout: ${stdout}`);
     console.log(`stderr: ${stderr}`);
   });
+}
+function genCommand(obj){
+  cmd_str=`"wrapper_loop_modeller2('${obj.pdb_id}','${genStandardFileName(obj)}','${obj.chain}',${obj.segbeg},${obj.segend},${Arr2dtoMLstr(obj.target_residues_phi)},${Arr2dtoMLstr(obj.target_residues_psi)},${ArrtoMLstr(obj.constr_residues_phi)},${ArrtoMLstr(obj.constr_residues_psi)},${obj.itterations});exit;"`
+  console.log(cmd_str)
+  return cmd_str
 }
 
 init()
