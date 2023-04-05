@@ -14,6 +14,7 @@ const matlab = require("node-matlab");
 const { json } = require('express');
 const { resolve } = require('path');
 const path = require('path');
+const { ifError } = require('assert');
 let useBash=false
 
 db.then(() => {
@@ -103,8 +104,13 @@ router.post('/', async (req, res, next) => {
 
     //move the file
     //insert record of file to db
+    try{
     var shouldInsert = await runMatlabScript1(process.env.SCRIPT_DIR,genCommand(req.body), genStandardFileName(req.body), process.env.PDB_OUT_DIR)
+    }catch(error){
+      console.log(error)
+    }
     console.log("made file now insert to db")
+    console.log(" should insert" +shouldInsert)
     if(shouldInsert){
       var insertd = await insert2db(req.body)
       res.json({"redirectUrl" : process.env.HOST+"/public/OutputPDBS/"+req.body.fname})
@@ -124,7 +130,6 @@ router.post('/', async (req, res, next) => {
 });
 
 async function insert2db(obj){
-  try {
     console.log("called submit endpoint")
 
     std_name=genStandardFileName(obj)
@@ -137,6 +142,7 @@ async function insert2db(obj){
    //const query = {}; 
    //query["fname"] = std_name;
    result =  await pdbs.findOne({fname: std_name}).then((doc) => {console.log(doc)});
+
    console.log("result "+result)
     if(result !==  undefined ){
       console.log("in DB")
@@ -159,8 +165,14 @@ async function insert2db(obj){
       //}, (er)=>{
       //    console.log("resolved promise error " + er)
       //});
-
-        ok = await runMatlabScript1(process.env.SCRIPT_DIR,genCommand(obj), genStandardFileName(obj), process.env.PDB_OUT_DIR)
+        var ok = false
+        try{
+        await runMatlabScript1(process.env.SCRIPT_DIR,genCommand(obj), genStandardFileName(obj), process.env.PDB_OUT_DIR)
+        .then( result => ok=result )
+        .catch(error  => ok=false)
+        }catch(error){
+          console.log(error)
+        }
         console.log("file made ok " + ok)
         if(ok != false){
         const inserted = await pdbs.insert(value);
@@ -170,12 +182,10 @@ async function insert2db(obj){
         
     }
     //res.json(inserted);
-} catch (error) {
-    console.log(error)
-}
-}
 
-
+}
+//old
+/*
   async function runMatlabScript1(dir1, scriptName, fname1, dir2) {
     const matlabCommand = `matlab -batch ${scriptName}`;
     console.log(matlabCommand)
@@ -186,19 +196,48 @@ async function insert2db(obj){
     proc = exec(`cd ${dir1} && ${matlabCommand} && ${moveCommand}`, (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
-        return false
-      }else{
-        return true
       }
-      console.log(`stdout: ${stdout}`);
-      console.error(`stderr: ${stderr}`);
-    });
-    proc.on('exit', () => {
-      console.log("matlab finshed")
-      console.log("now can insert to db")
+    })
+      //if (error) {
+      //  console.error(`exec error: ${error}`);
+      //  return false
+      //}else{
+      //  return true
+     // }
+     // console.log(`stdout: ${stdout}`);
+     // console.error(`stderr: ${stderr}`);
+    //}); 
+    proc.on('exit', (error, stdout, stderr) => {
+      if(error){
+        reject(false)
+      }else{
+        resolve(true)
+      }
     });
   }
+*/
 
+function runMatlabScript1(dir1, scriptName, fname1, dir2) {
+  return new Promise((resolve, reject) => {
+    const matlabCommand = `matlab -batch ${scriptName}`;
+    console.log(matlabCommand);
+    const moveCommand = `move ${dir1 + fname1} ${dir2}`;
+    console.log(moveCommand);
+    console.log("full command");
+    console.log(`cd ${dir1} && ${matlabCommand} && ${moveCommand}`);
+    try{
+    const proc = exec(`cd ${dir1} && ${matlabCommand} && ${moveCommand}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        reject(error);
+      } else {
+        resolve(true);
+      }
+    });
+    }catch(error){console.log(error)}
+  });
+
+}
   function genStandardFileName(json_obj){
     //console.log(json_obj)
     console.log("gen fnmae")
@@ -355,25 +394,8 @@ function ArrtoMLstr(arr){
   str=str+"]"
   return str
 }
-async function runScript(obj){
-  if(obj == null){
-    console.log('runScript obj nul')
-  }
-  console.log("runscript got "+obj.fname)
-  cmd_str=`cd ${process.env.SCRIPT_DIR} && matlab -nodisplay -nojvm -r  "wrapper_loop_modeller2('${obj.pdb_id}','${genStandardFileName(obj)}.pdb','${obj.chain}',${obj.segbeg},${obj.segend},${Arr2dtoMLstr(obj.target_residues_phi)},${Arr2dtoMLstr(obj.target_residues_psi)},${ArrtoMLstr(obj.constr_residues_phi)},${ArrtoMLstr(obj.constr_residues_psi)},${obj.itterations});exit; && cp '${genStandardFileName(obj)}.pdb' ./../OuputPdbs"`
-  console.log(cmd_str)
-  exec(cmd_str, (err, stdout, stderr) => {
-    if (err) {
-      // node couldn't execute the command
-      console.log(err)
-      return;
-    }
-  
-    // the *entire* stdout and stderr (buffered)
-    console.log(`stdout: ${stdout}`);
-    console.log(`stderr: ${stderr}`);
-  });
-}
+
+
 function genCommand(obj){
   cmd_str=`"wrapper_loop_modeller2('${obj.pdb_id}','${genStandardFileName(obj)}','${obj.chain}',${obj.segbeg},${obj.segend},${Arr2dtoMLstr(obj.target_residues_phi)},${Arr2dtoMLstr(obj.target_residues_psi)},${ArrtoMLstr(obj.constr_residues_phi)},${ArrtoMLstr(obj.constr_residues_psi)},${obj.itterations});exit;"`
   console.log(cmd_str)
