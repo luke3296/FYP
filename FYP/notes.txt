@@ -78,7 +78,8 @@ Jmol.script(jmolApplet0, "select all; color orange");
 
 load files "=1adg" "http://localhost:5123/public/OutputPDBS/LADH_loopmovement.pdb" select protein and 2.1; cartoon; color cornflowerblue;
 
-
+load http://localhost:5123/public/OutputPDBS/PDBID_1ADG_CHAIN_A_BEG_290_END_303_PHITARGS_291_-90_292_-110_293_-64_PSITARGS_291_122_292_-35_PHICONSTR_295_296_PSICONSTR_295_296_ITTR_10000.pdb
+load http://127.0.0.1:5123/public/OutputPDBS/PDBID_1ADG_CHAIN_A_BEG_290_END_303_PHITARGS_291_-90_292_-110_293_-64_PSITARGS_291_122_292_-35_PHICONSTR_295_296_PSICONSTR_295_296_ITTR_10000.pdb
 select * and 1.1 ; color orange
 
 

@@ -18,3 +18,6 @@ ul {
 #show_tors{
   visibility: hidden;
 }
+#nav_item{
+  display: inline;
+}

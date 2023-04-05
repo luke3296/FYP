@@ -113,8 +113,8 @@ async function submit_to_server() {
 	if (isValid) {
 		console.log("send json");
 		obj = {
-			"pdb_id": pdb_id,
-			"chain": chain,
+			"pdb_id": pdb_id.toUpperCase(),
+			"chain": chain.toUpperCase(),
 			"segbeg": segbeg,
 			"segend": segend,
 			"target_residues_phi": target_residues_phi_stack,
@@ -125,8 +125,8 @@ async function submit_to_server() {
 		}
 		std_fname=genStandardFileName(obj)
 		snd_obj = {
-			"pdb_id": pdb_id,
-			"fname" : std_fname,
+			"pdb_id": pdb_id.toUpperCase(),
+			"fname" : std_fname.toUpperCase(),
 			"chain": chain,
 			"segbeg": segbeg,
 			"segend": segend,

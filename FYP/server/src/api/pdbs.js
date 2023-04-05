@@ -48,7 +48,7 @@ const schema = Joi.object({
 const router = express.Router();
 
 //read all
-
+/*
 router.get('/', async (req, res, next) => {
 try {
     const records = await pdbs.find({});
@@ -58,11 +58,24 @@ try {
 }
 
 });
-
+*/
+router.get('/', async (req, res) => {
+  const pdbid = req.query.pdbid;
+  try {
+    const result = await pdbs.find({ pdb_id: pdbid });
+    if (result) {
+      res.json(result);
+    } else {
+      res.json({ message: 'No document found with the given pdb_id' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 //post one
-//RETURNS FILE PATH IF FILE EXSISTS OR FALSE
+//RETURNS FILE PATH IF FILE EXSISTS OR FALSE IF NOT 
 router.post('/:id',  (req, res, next) => {
-  console.log("get one "+ req.params.id );
+  console.log("post one "+ req.params.id );
   ret_str=process.env.HOST+"/public/OutputPDBS/"+req.body.fname
   console.log(ret_str);
   const filePath = path.join(process.env.PDB_OUT_DIR,  req.body.fname);
@@ -90,10 +103,14 @@ router.post('/', async (req, res, next) => {
 
     //move the file
     //insert record of file to db
-    runMatlabScript1(process.env.SCRIPT_DIR,genCommand(req.body), genStandardFileName(req.body), process.env.PDB_OUT_DIR)
-
-    insert2db(req.body)
-    res.json({"redirectUrl" : false})
+    var shouldInsert = await runMatlabScript1(process.env.SCRIPT_DIR,genCommand(req.body), genStandardFileName(req.body), process.env.PDB_OUT_DIR)
+    console.log("made file now insert to db")
+    if(shouldInsert){
+      var insertd = await insert2db(req.body)
+      res.json({"redirectUrl" : process.env.HOST+"/public/OutputPDBS/"+req.body.fname})
+    }else{
+      res.json({"redirectUrl" : false})
+    }
 
   }else{
     //in DB
@@ -143,8 +160,13 @@ async function insert2db(obj){
       //    console.log("resolved promise error " + er)
       //});
 
-        runMatlabScript1(process.env.SCRIPT_DIR,genCommand(obj), genStandardFileName(obj), process.env.PDB_OUT_DIR)
+        ok = await runMatlabScript1(process.env.SCRIPT_DIR,genCommand(obj), genStandardFileName(obj), process.env.PDB_OUT_DIR)
+        console.log("file made ok " + ok)
+        if(ok != false){
         const inserted = await pdbs.insert(value);
+        }else{
+          console.log("failed with input " + std_name )
+        }
         
     }
     //res.json(inserted);
@@ -153,39 +175,27 @@ async function insert2db(obj){
 }
 }
 
-async function runMatlabScript(scriptPath, ...args) {
-    
-   
-    //const session = new matlab.Session();
-  
-    // Create a string representation of the arguments
-    const argString = args.map(arg => `'${arg}'`).join(', ');
-    console.log(scriptPath+ " "+argString)
-    // Execute the MATLAB script with the arguments
-    //const result = await session.run(`run('${scriptPath}', ${argString})`);
-    matlab
-    .run(scriptPath + " " + argString)
-    .then((result) => console.log(result))
-    .catch((error) => console.log(error));
-  
 
-    return "result";
-  }
-
-  function runMatlabScript1(dir1, scriptName, fname1, dir2) {
+  async function runMatlabScript1(dir1, scriptName, fname1, dir2) {
     const matlabCommand = `matlab -batch ${scriptName}`;
     console.log(matlabCommand)
     const moveCommand = `move ${dir1 + fname1} ${dir2}`;
     console.log(moveCommand)
     console.log("full command")
     console.log(`cd ${dir1} && ${matlabCommand} && ${moveCommand}`)
-    exec(`cd ${dir1} && ${matlabCommand} && ${moveCommand}`, (error, stdout, stderr) => {
+    proc = exec(`cd ${dir1} && ${matlabCommand} && ${moveCommand}`, (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
-        return;
+        return false
+      }else{
+        return true
       }
       console.log(`stdout: ${stdout}`);
       console.error(`stderr: ${stderr}`);
+    });
+    proc.on('exit', () => {
+      console.log("matlab finshed")
+      console.log("now can insert to db")
     });
   }
 
@@ -195,7 +205,7 @@ async function runMatlabScript(scriptPath, ...args) {
     console.log(json_obj)
     console.log(json_obj.constr_residues_phi)
     res="PDBID_"
-    res=res+json_obj.pdb_id.toUpperCase()
+    res=res+(json_obj.pdb_id).toUpperCase()
     res=res+`_CHAIN_${json_obj.chain}`
     res=res+"_BEG_"
     res=res+json_obj.segbeg
@@ -257,28 +267,6 @@ async function runMatlabScript(scriptPath, ...args) {
       });
     }
 
-async function runMatlabCmd(cmdString) {
-
-    "matlab -nodisplay -nojvm -r "  + "cd C:/Users/sluke/Documents/GitHub/FYP/FYP/TAT_Matlabcode/;"+ " wrapper_loop_modeller2('1adg','LADH_loopmovement.pdb','A',290,301,[291 -90 ; 292 -110; 293 -64; 294 -90],[291 122; 292 -35; 293 147],[295 296],[294 295],10000);exit;";
-}
-
-function spawntest(){
-  ls.stdout.on("data", data => {
-    console.log(`stdout: ${data}`);
-});
-
-ls.stderr.on("data", data => {
-    console.log(`stderr: ${data}`);
-});
-
-ls.on('error', (error) => {
-    console.log(`error: ${error.message}`);
-});
-
-ls.on("close", code => {
-    console.log(`child process exited with code ${code}`);
-});
-}
 
 
 function listDirectoryContents(directoryPath, useBash = false) {

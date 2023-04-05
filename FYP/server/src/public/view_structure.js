@@ -1,10 +1,14 @@
-window.onload = function() {
 
+var left_crtl = true
 
-    
+window.onload = function() { 
+  
+  document.getElementById("right window").checked = false;
+  document.getElementById("left window").checked = true;
+
         var JmolInfo = {
-            width: 300,
-            height: 300,
+            width: 500,
+            height: 500,
             //serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
             use: "HTML5",
             script: "load=1adg"
@@ -16,8 +20,8 @@ window.onload = function() {
         );
 
         var JmolInfo = {
-          width: 300,
-          height: 300,
+          width: 500,
+          height: 500,
           //serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
           use: "HTML5",
           script: "load http://localhost:5123/public/OutputPDBS/PDBID_1ADG_CHAIN_A_BEG_290_END_303_PHITARGS_291_-90_292_-110_293_-64_PSITARGS_291_122_292_-35_PHICONSTR_295_296_PSICONSTR_295_296_ITTR_10000.pdb"
@@ -27,6 +31,12 @@ window.onload = function() {
           "jmolApplet1",
           JmolInfo
       );
+
+document.getElementById("Rotate").addEventListener("click", rotate_model);
+document.getElementById("ResetView").addEventListener("click", reset_view)
+document.getElementById("Highlight segment").addEventListener("click", highlight)
+document.getElementById("run_cmd").addEventListener("click", run_jmol_script);
+document.getElementById("load2model").addEventListener("click", load_pdb);
 
     };
 
@@ -67,6 +77,7 @@ window.onload = function() {
     }
 
     function rotate_model() {
+      console.log("called rotate")
         Jmol.script(jmolApplet0, "rotate y 30");
     }
 
@@ -82,54 +93,17 @@ window.onload = function() {
             "select " + start + "-" + end + "; color orange"
         );
     }
-//doesnt work
-    function print_atoms() {
-    var start = document.getElementById("start").value;
-    var end = document.getElementById("end").value;
-    console.log(Jmol.getPropertyAsArray(jmolApplet0, "chainInfo").models[0].chains[0].residues)
-    console.log(Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0])
-    console.log(start + " "+ end)
-    for(i=start-1;i<end;i=i+1){
-      console.log()
-    }
 
-    Jmol.script(jmolApplet0, "console.log(modelView('" + start + "-" + end + "', {atomsOnly: true}));");
-  }
-//doesnt work
-  function calculate_torsion_angles() {
-    var start = document.getElementById("start").value;
-    var end = document.getElementById("end").value;
-    var torsion_angles = Jmol.evaluate(jmolApplet0, "measure torsion " + start + "-" + end);
-    console.log(torsion_angles);
-}
 
 function run_jmol_script() {
         var cmd = document.getElementById("cmd_str").value;
+        if(left_crtl){
         Jmol.script(jmolApplet0, cmd);
+        }else{
+        Jmol.script(jmolApplet1, cmd);
+        }
     }
 
-function getBackboneCoordinates(jmolApplet) {
-  // Define the backbone atom names
-    var backboneAtoms = ["N", "CA", "C", "O"];
-    var start = document.getElementById("start").value;
-    var end = document.getElementById("end").value;
-    var atomInfo = Jmol.getPropertyAsArray(jmolApplet0, "atomInfo")
-    console.log(atomInfo)
-  // Initialize an empty array to store the backbone atom coordinates
-  var backboneCoords = [];
-
-  // Iterate over the backbone atoms
-  for (var i = 0; i < backboneAtoms.length; i++) {
-    // Get the coordinates for each backbone atom
-    var atomCoords = Jmol.getAtomProperty(jmolApplet, backboneAtoms[i], "xyz");
-
-    // Push the atom coordinates to the backboneCoords array
-    backboneCoords.push(atomCoords);
-  }
-
-  // Return the backbone atom coordinates
-  return backboneCoords;
-}
 
 function Sync(){
   if (document.getElementById("sync").checked == true){
@@ -147,25 +121,83 @@ async function Load(){
   Jmol.script(jmolApplet0, "load "+data.redirectUrl)
 }
 
-  async function getPdb(fname) {
-    const response = await fetch("http://localhost:5123/api/v1/pdbs/", {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: JSON.stringify({ fname : fname })
-    });
-    const data = await response.json();
-    return data;
+
+async function load_from_server(event){
+  console.log(event)
+  parent=event.target.parentNode
+  console.log(parent)
+  console.log(parent.querySelectorAll('p'))
+  
+  fname=parent.querySelectorAll('p')[0].innerText
+  console.log(parent.querySelectorAll('p')[0].innerText)
+  console.log(parent.querySelectorAll('p')[0].innerHTML)
+  exsists=await check_file_exsists(fname)
+  console.log("exsists")
+  console.log(exsists)
+  if(exsists == false){
+    alert("server err that file doesn't exsist but is reference in the database")
+  }else{
+    Jmol.script(jmolApplet1, "load "+exsists)
   }
+}
+async function check_file_exsists(fname_){
+  console.log("searching for "+fname_ )
+  let res_= await fetch("http://localhost:5123/api/v1/pdbs/1", {
+    method : 'POST',
+    headers : {
+      'Content-Type' : 'application/json'
+    },
+    body : JSON.stringify({
+      fname : fname_
+    })
+  }).then(res_ => res_.text())
+  return res_
+}
 
-  //  document.getElementById("run_cmd").addEventListener("click", run_jmol_script);
+async function Search(){
+  query=document.getElementById("search_q").value
+  query="http://localhost:5123/api/v1/pdbs/?pdbid="+query.toUpperCase()
+  fetch(query)
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    //document.getElementById("search_result").value = data
+    resultDiv=document.getElementById("search_result")
+    resultDiv.innerHTML=''
+    
+    for(var i=0;i<data.length;i++){
+      innerDiv= document.createElement('div');
+      console.log(data[i])
+      a = document.createElement('a');
+      p = document.createElement('p');
+      p.style.display='none'
+      p.textContent=data[i].fname  
+      a.textContent = data[i].pdb_id + " " + data[i].segbeg + " " + data[i].segend + " "+ data[i].target_residues_phi 
+      a.onclick = load_from_server
+      innerDiv.appendChild(a)
+      innerDiv.appendChild(p)
+      resultDiv.appendChild(innerDiv)
+      resultDiv.append(document.createElement('br'))
+    }
+  })
+  .catch(error => {
+    console.error(error);
+  });
 
+}
 
-    //document.getElementById("load2model").addEventListener("click", load_pdb);
+function toggle_ctr1(){
+   
+      left_crtl = true
+      document.getElementById("right window").checked = false;
+      document.getElementById("left window").checked = true;
+    
+}
+function toggle_ctr2(){
+   
+    left_crtl = false
+    document.getElementById("left window").checked = false;
+    document.getElementById("right window").checked = true;
 
-    document.getElementById("Rotate").addEventListener("click", rotate_model);
-
-    document.getElementById("ResetView").addEventListener("click", reset_view)
-
-    document.getElementById("Highlight segment").addEventListener("click", highlight)
+   
+}
