@@ -109,7 +109,6 @@ router.post('/', async (req, res, next) => {
     }catch(error){
       console.log(error)
     }
-    console.log("made file now insert to db")
     console.log(" should insert" +shouldInsert)
     if(shouldInsert){
       var insertd = await insert2db(req.body)
@@ -166,6 +165,7 @@ async function insert2db(obj){
       //    console.log("resolved promise error " + er)
       //});
         var ok = false
+        /*
         try{
         await runMatlabScript1(process.env.SCRIPT_DIR,genCommand(obj), genStandardFileName(obj), process.env.PDB_OUT_DIR)
         .then( result => ok=result )
@@ -173,6 +173,7 @@ async function insert2db(obj){
         }catch(error){
           console.log(error)
         }
+        */
         console.log("file made ok " + ok)
         if(ok != false){
         const inserted = await pdbs.insert(value);

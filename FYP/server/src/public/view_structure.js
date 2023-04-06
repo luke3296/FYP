@@ -1,14 +1,30 @@
 
 var left_crtl = true
+var width_crtl = true
 
 window.onload = function() { 
+  window.onresize = handleWindowSize;
   
+
+
   document.getElementById("right window").checked = false;
   document.getElementById("left window").checked = true;
+  document.getElementById("sync").checked=false;
+  
+  w =Number( window.innerWidth)
+if(w<860){
+ size_inital=400
+ document.getElementById("left_label").textContent="up"
+ document.getElementById("right_label").textContent="down"
+}else{
+  size_inital=598
+  document.getElementById("left_label").textContent="left"
+  document.getElementById("right_label").textContent="right"
+}
 
         var JmolInfo = {
-            width: 500,
-            height: 500,
+          width: size_inital,
+          height: size_inital,
             //serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
             use: "HTML5",
             script: "load=1adg"
@@ -20,11 +36,11 @@ window.onload = function() {
         );
 
         var JmolInfo = {
-          width: 500,
-          height: 500,
+          width: size_inital,
+          height: size_inital,
           //serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
           use: "HTML5",
-          script: "load http://localhost:5123/public/OutputPDBS/PDBID_1ADG_CHAIN_A_BEG_290_END_303_PHITARGS_291_-90_292_-110_293_-64_PSITARGS_291_122_292_-35_PHICONSTR_295_296_PSICONSTR_295_296_ITTR_10000.pdb"
+          script: "load http://localhost:5123/public/OutputPDBS/PDBID_1ADG_CHAIN_A_BEG_290_END_301_PHITARGS_291_-90_292_-110_293_-64_294_-90_PSITARGS_291_122_292_-35_293_147_PHICONSTR_295_296_PSICONSTR_295_296_ITTR_10000.pdb"
       }
     
       document.getElementById("appdiv2").innerHTML = Jmol.getAppletHtml(
@@ -38,7 +54,8 @@ document.getElementById("Highlight segment").addEventListener("click", highlight
 document.getElementById("run_cmd").addEventListener("click", run_jmol_script);
 document.getElementById("load2model").addEventListener("click", load_pdb);
 
-    };
+
+};
 
 //matlab -nodisplay -nojvm -r  "wrapper_loop_modeller2('1adg','LADH_loopmovement.pdb','A',290,301,[291 -90 ; 292 -110; 293 -64; 294 -90],[291 122; 292 -35; 293 147],[295 296],[294 295],10000);exit;"
     function setDefault(){
@@ -66,8 +83,6 @@ document.getElementById("load2model").addEventListener("click", load_pdb);
       itter=10000
 
       document.getElementById("pdbcode_input").value = pdbid
-
-
     }
 
     function load_pdb() {
@@ -96,7 +111,9 @@ document.getElementById("load2model").addEventListener("click", load_pdb);
 
 
 function run_jmol_script() {
+        console.log("run jmol cmd")
         var cmd = document.getElementById("cmd_str").value;
+        console.log("cmd" +cmd)
         if(left_crtl){
         Jmol.script(jmolApplet0, cmd);
         }else{
@@ -199,5 +216,20 @@ function toggle_ctr2(){
     document.getElementById("left window").checked = false;
     document.getElementById("right window").checked = true;
 
-   
+}
+
+function handleWindowSize(){
+  
+  w =Number( window.innerWidth)
+  if(w<860){
+    jmolApplet0._resizeApplet(400,400)
+    jmolApplet1._resizeApplet(400,400)
+    document.getElementById("left_label").textContent="up"
+    document.getElementById("right_label").textContent="down"
+  }else{
+    jmolApplet0._resizeApplet(598,598)
+    jmolApplet1._resizeApplet(598,598)
+    document.getElementById("left_label").textContent="left"
+    document.getElementById("right_label").textContent="right"
+  }
 }

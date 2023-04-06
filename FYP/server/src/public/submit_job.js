@@ -147,7 +147,7 @@ async function submit_to_server() {
 			}).then(res => res.json())
 			  .then(res => {
                 if(res.redirectUrl == false){
-                    alert("no file found check back in abit")
+                    console.log("no file found or error encountered")
                 }else{
 				    console.log(res.redirectUrl)
 					
