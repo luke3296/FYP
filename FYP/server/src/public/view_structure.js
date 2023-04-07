@@ -1,17 +1,18 @@
 
 var left_crtl = true
 var width_crtl = true
+var current_loop=''
+var highted=false;
 
 window.onload = function() { 
   window.onresize = handleWindowSize;
-  
-
 
   document.getElementById("right window").checked = false;
   document.getElementById("left window").checked = true;
   document.getElementById("sync").checked=false;
+  document.getElementById("highlight").checked=false;
   
-  w =Number( window.innerWidth)
+w =Number( window.innerWidth)
 if(w<860){
  size_inital=400
  document.getElementById("left_label").textContent="up"
@@ -48,9 +49,33 @@ if(w<860){
           JmolInfo
       );
 
+document.getElementById("third").innerHTML+=Jmol.jmolRadioGroup(jmolApplet0, [["set background white", "white", true],["set background black", "black"]])
+document.getElementById("fifth").innerHTML+=Jmol.jmolRadioGroup(jmolApplet1, [["set background white", "white", true],["set background black", "black"]])
+
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"cartoon only")
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"wireframe -0.25", "stick")
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"spacefill only;spacefill 23%;wireframe 0.15","ball&stick")
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"spacefill","Van der Waals")
+
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"color cpk")
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"color group")
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"color amino")
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"color structure")
+
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim play")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "if (animationFPS > 2) anim fps @{animationFPS/2};")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "if (animationFPS > 2) anim fps @{animationFPS/2};")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;anim rewind#;","First")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;frame prev", "Prev")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;frame next", "Next")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;frame last", "Last")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;frame all", "All")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "loop frame 1;anim mode loop;frame 1;frame play")
+
 document.getElementById("Rotate").addEventListener("click", rotate_model);
 document.getElementById("ResetView").addEventListener("click", reset_view)
-document.getElementById("Highlight segment").addEventListener("click", highlight)
+//document.getElementById("Highlight segment").addEventListener("click", highlight)
 document.getElementById("run_cmd").addEventListener("click", run_jmol_script);
 document.getElementById("load2model").addEventListener("click", load_pdb);
 
@@ -138,6 +163,7 @@ async function Load(){
   Jmol.script(jmolApplet0, "load "+data.redirectUrl)
 }
 
+const re = /BEG_\d+_END_\d+/;
 
 async function load_from_server(event){
   console.log(event)
@@ -146,6 +172,19 @@ async function load_from_server(event){
   console.log(parent.querySelectorAll('p'))
   
   fname=parent.querySelectorAll('p')[0].innerText
+
+  //set the current loops begin / end string 
+  result = fname.match(re)[0]
+  result2 = result.replace('BEG','')
+  result3 = result2.replace('END','')
+  result4 = result3.replace('_','')
+  result5 = result4.replace('__','-')
+  result6 = result5.trim()
+  current_loop=result6
+
+
+
+  
   console.log(parent.querySelectorAll('p')[0].innerText)
   console.log(parent.querySelectorAll('p')[0].innerHTML)
   exsists=await check_file_exsists(fname)
@@ -221,7 +260,7 @@ function toggle_ctr2(){
 function handleWindowSize(){
   
   w =Number( window.innerWidth)
-  if(w<860){
+  if(w<880){
     jmolApplet0._resizeApplet(400,400)
     jmolApplet1._resizeApplet(400,400)
     document.getElementById("left_label").textContent="up"
@@ -232,4 +271,21 @@ function handleWindowSize(){
     document.getElementById("left_label").textContent="left"
     document.getElementById("right_label").textContent="right"
   }
+}
+
+function HighlightLoop(){
+  if(!highted){
+    highted=true
+  Jmol.script(
+    jmolApplet0,
+    "select " +current_loop+ "; color orange"
+);
+  }else{
+    highted=false
+    Jmol.script(
+      jmolApplet0,
+      "select * ; color cpk"
+  );
+  }
+
 }

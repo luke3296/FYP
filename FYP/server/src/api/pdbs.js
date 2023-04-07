@@ -34,6 +34,7 @@ async function checkRecordExists(propertyName, propertyValue) {
 const schema = Joi.object({
     pdb_id: Joi.string().trim().required(),
     fname: Joi.string().trim(),
+    //chain : Joi.string().regex(/^[a-zA-Z]$/).required(),
     chain: Joi.string().trim().required(),
     segbeg: Joi.number().integer().required(),
     segend: Joi.number().integer().required(),
@@ -48,18 +49,7 @@ const schema = Joi.object({
 
 const router = express.Router();
 
-//read all
-/*
-router.get('/', async (req, res, next) => {
-try {
-    const records = await pdbs.find({});
-    res.json(records);
-} catch (error) {
-    next(error);
-}
 
-});
-*/
 router.get('/', async (req, res) => {
   const pdbid = req.query.pdbid;
   try {
@@ -77,6 +67,8 @@ router.get('/', async (req, res) => {
 //RETURNS FILE PATH IF FILE EXSISTS OR FALSE IF NOT 
 router.post('/:id',  (req, res, next) => {
   console.log("post one "+ req.params.id );
+
+  if(req.params.id==1){
   ret_str=process.env.HOST+"/public/OutputPDBS/"+req.body.fname
   console.log(ret_str);
   const filePath = path.join(process.env.PDB_OUT_DIR,  req.body.fname);
@@ -91,12 +83,18 @@ router.post('/:id',  (req, res, next) => {
   } catch (err) {
     //console.error(err);
   }
+}else if(req.params.id==2){
+   value = schema.validate(req.body);
+   console.log("value " + value)
+
+}
 });
 
 //post one
 //returns file path if file data in db fase otherwise
 router.post('/', async (req, res, next) => {
   result=await checkRecordExists("fname", req.body.fname)
+  console.log( "result " +  result )
   if(result == false){
     //not in DB
     //make the file
@@ -136,10 +134,7 @@ async function insert2db(obj){
     const value = await schema.validateAsync(obj);
     console.log("value " +value)
    
-//'1adg','LADH_loopmovement.pdb','A',290,301,[291 -90 ; 292 -110; 293 -64; 294 -90],[291 122; 292 -35; 293 147],[295 296],[294 295],10000
-   // runMatlabScript("./../../../TAT_Matlabcode/wrapper_loop_modeller2.m", req.body.pdb_id, req.body.fname , req.body.chain, req.body.segbeg, req.body.segend, `[${req.body.target_residues_phi}]`, `[${req.body.target_residues_psi}]`, `[${req.body.constr_residues_phi}]`, `${[req.body.constr_residues_psi]}`, req.body.itterations) 
-   //const query = {}; 
-   //query["fname"] = std_name;
+
    result =  await pdbs.findOne({fname: std_name}).then((doc) => {console.log(doc)});
 
    console.log("result "+result)
@@ -153,27 +148,9 @@ async function insert2db(obj){
         
     }else{
       console.log("not in DB")
-      //  console.log(result)
-        //refer to page
-       // window.location.replace("http://www.w3schools.com");
-        //cmd_str = `${std_name} `
 
-        
-      //  runScript(obj).then((em)=>{
-      //    console.log("resolved promise  "+ em )
-      //}, (er)=>{
-      //    console.log("resolved promise error " + er)
-      //});
         var ok = false
-        /*
-        try{
-        await runMatlabScript1(process.env.SCRIPT_DIR,genCommand(obj), genStandardFileName(obj), process.env.PDB_OUT_DIR)
-        .then( result => ok=result )
-        .catch(error  => ok=false)
-        }catch(error){
-          console.log(error)
-        }
-        */
+
         console.log("file made ok " + ok)
         if(ok != false){
         const inserted = await pdbs.insert(value);
@@ -218,14 +195,23 @@ async function insert2db(obj){
   }
 */
 
+function checkExecOutput(command, searchString) {
+  return new Promise((resolve, reject) => {
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(stdout.includes(searchString) ? stdout : true);
+      }
+    });
+  });
+}
+
 function runMatlabScript1(dir1, scriptName, fname1, dir2) {
   return new Promise((resolve, reject) => {
     const matlabCommand = `matlab -batch ${scriptName}`;
-    console.log(matlabCommand);
     const moveCommand = `move ${dir1 + fname1} ${dir2}`;
-    console.log(moveCommand);
-    console.log("full command");
-    console.log(`cd ${dir1} && ${matlabCommand} && ${moveCommand}`);
+    console.log(`COMMAND: cd ${dir1} && ${matlabCommand} && ${moveCommand}`);
     try{
     const proc = exec(`cd ${dir1} && ${matlabCommand} && ${moveCommand}`, (error, stdout, stderr) => {
       if (error) {
@@ -252,34 +238,26 @@ function runMatlabScript1(dir1, scriptName, fname1, dir2) {
     res=res+"_END_"
     res=res+json_obj.segend
     res=res+"_PHITARGS"
-    //console.log(json_obj.target_residues_phi.length)
-    //console.log(json_obj.target_residues_phi[1].length)
+   
     for(var i=0;i<json_obj.target_residues_phi.length;i++){
         res=res+"_"+json_obj.target_residues_phi[i][0]+"_"+json_obj.target_residues_phi[i][1]
-        //console.log(`_${json_obj.target_residues_phi[i][0]}_${json_obj.target_residues_phi[i][1]}`)
     }
     
-    //res=res+String(json_obj.target_residues_phi).replace(",", "_");
     res=res+"_PSITARGS"
-    //console.log(json_obj.target_residues_psi.length)
     for(var i=0;i<json_obj.target_residues_psi.length;i++){
-        //console.log( "value "+json_obj.target_residues_psi[i][0])
         res=res+"_"+json_obj.target_residues_psi[i][0]+"_"+json_obj.target_residues_psi[i][1]
-        //console.log(`_${json_obj.target_residues_psi[i][0]}_${json_obj.target_residues_psi[i][1]}`)
     }
-    //console.log(json_obj.target_residues_psi[0][0])
-   //res=res+String(json_obj.target_residues_psi).replace(",", "_");
+
     res=res+"_PHICONSTR"
     for(var i=0;i<json_obj.constr_residues_phi.length;i++){
        res=res+"_"+json_obj.constr_residues_phi[i]
     }
     
-   //res=res+String(json_obj.constr_residues_phi).replace(",", "_");
     res=res+"_PSICONSTR"
     for(var i=0;i<json_obj.constr_residues_psi.length;i++){
         res=res+"_"+json_obj.constr_residues_psi[i]
     }
-   // res=res+String(json_obj.constr_residues_psi).replace(",", "_");
+
     res=res+"_ITTR_"+json_obj.itterations
     //console.log(res)
     res=res+".pdb"
@@ -306,7 +284,6 @@ function runMatlabScript1(dir1, scriptName, fname1, dir2) {
         });
       });
     }
-
 
 
 function listDirectoryContents(directoryPath, useBash = false) {

@@ -137,7 +137,7 @@ async function submit_to_server() {
 			"itterations": itterations
 		}
         //console.log(obj)
-		fetch('http://localhost:5123/api/v1/pdbs/', {
+		await fetch('http://localhost:5123/api/v1/pdbs/', {
 				method: 'POST',
 				headers: {
 					'Accept': 'application/json, text/plain, */*',
@@ -150,9 +150,8 @@ async function submit_to_server() {
                     console.log("no file found or error encountered")
                 }else{
 				    console.log(res.redirectUrl)
-					
                 }
-				//if(res.)
+
 			});
 
 	}
