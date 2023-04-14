@@ -32,17 +32,16 @@ async function checkRecordExists(propertyName, propertyValue) {
 
 //schmea example '1adg','LADH_loopmovement.pdb','A',290,301,[291 , -90; 292 , -110; 293 , -64; 294 , -90],[291 122; 292 -35; 293 147],[295 296],[295 296] ,10000
 const schema = Joi.object({
-    pdb_id: Joi.string().trim().required(),
-    fname: Joi.string().trim(),
+    pdb_id: Joi.string().trim().required().strict().error(new Error('PDB ID is required')),
+    fname: Joi.string().strict().trim(),
     //chain : Joi.string().regex(/^[a-zA-Z]$/).required(),
-    chain: Joi.string().trim().required(),
-    segbeg: Joi.number().integer().required(),
-    segend: Joi.number().integer().required(),
-    chain: Joi.string().trim().required(),
-    target_residues_phi: Joi.array().items(Joi.array().items(Joi.number().integer())),
-    target_residues_psi: Joi.array().items(Joi.array().items(Joi.number().integer())),
-    constr_residues_phi: Joi.array().items(Joi.number().integer()),
-    constr_residues_psi: Joi.array().items(Joi.number().integer()),
+    chain: Joi.string().trim().required().error(new Error('Chain is required')),
+    segbeg: Joi.number().integer().required().strict().error(new Error('Segbeg is required')),
+    segend: Joi.number().integer().required().strict().error(new Error('Segend is required')),
+    target_residues_phi: Joi.array().items(Joi.array().items(Joi.number().integer()).strict().error(new Error('needs to be int list'))),
+    target_residues_psi: Joi.array().items(Joi.array().items(Joi.number().integer())).strict().error(new Error('Segbeg is required needs to be int list')),
+    constr_residues_phi: Joi.array().items(Joi.number().integer()).strict().error(new Error(' needs to be int list')),
+    constr_residues_psi: Joi.array().items(Joi.number().integer()).strict().error(new Error(' needs to be int list')),
     itterations: Joi.number().integer()
 });
 
@@ -65,13 +64,13 @@ router.get('/', async (req, res) => {
 });
 //post one
 //RETURNS FILE PATH IF FILE EXSISTS OR FALSE IF NOT 
-router.post('/:id',  (req, res, next) => {
+router.post('/:id', async  (req, res, next) => {
   console.log("post one "+ req.params.id );
 
   if(req.params.id==1){
-  ret_str=process.env.HOST+"/public/OutputPDBS/"+req.body.fname
+  ret_str=process.env.HOST+"/public/OutputPDBS/"+sanitizeInput( req.body.fname)
   console.log(ret_str);
-  const filePath = path.join(process.env.PDB_OUT_DIR,  req.body.fname);
+  const filePath = path.join(process.env.PDB_OUT_DIR,  sanitizeInput( req.body.fname));
   console.log("fpath " + filePath);
   try {
     if (fs.existsSync(filePath)) {
@@ -84,17 +83,36 @@ router.post('/:id',  (req, res, next) => {
     //console.error(err);
   }
 }else if(req.params.id==2){
-   value = schema.validate(req.body);
-   console.log("value " + value)
+  const{ error } = schema.validate(req.body);
+  if (error) return res.status(400).send("object invalid");
 
+  obj=sanitizeInputObj(req.body)
+
+  try{
+    var check = await runMatlabScript2(process.env.SCRIPT_DIR,genCommand1(obj), genStandardFileName(obj), process.env.PDB_OUT_DIR)
+    res.send(check)
+    }catch(error){
+      console.log(error)
+    }
+    res.status(400).send("err")
 }
 });
 
 //post one
 //returns file path if file data in db fase otherwise
 router.post('/', async (req, res, next) => {
-  result=await checkRecordExists("fname", req.body.fname)
+  //check schema
+  const{ error } = schema.validate(req.body);
+  if (error) return res.status(400).send("object invalid");
+
+  //remove shell chars
+  obj=sanitizeInputObj(req.body)
+  std_name=genStandardFileName(obj)
+  obj.fname=std_name
+  //check if is exsists allready
+  result=await checkRecordExists("fname", obj.fname)
   console.log( "result " +  result )
+
   if(result == false){
     //not in DB
     //make the file
@@ -103,14 +121,14 @@ router.post('/', async (req, res, next) => {
     //move the file
     //insert record of file to db
     try{
-    var shouldInsert = await runMatlabScript1(process.env.SCRIPT_DIR,genCommand(req.body), genStandardFileName(req.body), process.env.PDB_OUT_DIR)
+    var shouldInsert = await runMatlabScript1(process.env.SCRIPT_DIR,genCommand(obj), genStandardFileName(obj), process.env.PDB_OUT_DIR)
     }catch(error){
       console.log(error)
     }
     console.log(" should insert" +shouldInsert)
     if(shouldInsert){
-      var insertd = await insert2db(req.body)
-      res.json({"redirectUrl" : process.env.HOST+"/public/OutputPDBS/"+req.body.fname})
+      var insertd = await insert2db(obj)
+      res.json({"redirectUrl" : process.env.HOST+"/public/OutputPDBS/"+obj.fname})
     }else{
       res.json({"redirectUrl" : false})
     }
@@ -118,7 +136,7 @@ router.post('/', async (req, res, next) => {
   }else{
     //in DB
     console.log("in db")
-    res.json({"redirectUrl" : process.env.HOST+"/public/OutputPDBS/"+req.body.fname})
+    res.json({"redirectUrl" : process.env.HOST+"/public/OutputPDBS/"+obj.fname})
   }
   
   console.log("res")
@@ -127,16 +145,28 @@ router.post('/', async (req, res, next) => {
 });
 
 async function insert2db(obj){
-    console.log("called submit endpoint")
 
     std_name=genStandardFileName(obj)
+    obj.fname=std_name
 
-    const value = await schema.validateAsync(obj);
-    console.log("value " +value)
-   
 
-   result =  await pdbs.findOne({fname: std_name}).then((doc) => {console.log(doc)});
-
+   // inserted = await pdbs.insert(obj);
+    
+  // result =  await pdbs.findOne({fname: std_name}).then((doc) => {if (doc) {resolve("exsists")}else{reject()}});
+   pdbs.findOne({fname: std_name})
+  .then(async (doc) => {
+    if (doc) {
+      result = "exists";
+    } else {
+      inserted = await pdbs.insert(obj);
+      result = "does not exist inserting it";
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+    // handle error here
+  });
+/*
    console.log("result "+result)
     if(result !==  undefined ){
       console.log("in DB")
@@ -153,12 +183,13 @@ async function insert2db(obj){
 
         console.log("file made ok " + ok)
         if(ok != false){
-        const inserted = await pdbs.insert(value);
+        inserted = await pdbs.insert(obj);
         }else{
           console.log("failed with input " + std_name )
         }
-        
+     
     }
+   */    
     //res.json(inserted);
 
 }
@@ -223,8 +254,26 @@ function runMatlabScript1(dir1, scriptName, fname1, dir2) {
     });
     }catch(error){console.log(error)}
   });
-
 }
+
+function runMatlabScript2(dir1, scriptName, fname1, dir2) {
+  return new Promise((resolve, reject) => {
+    const matlabCommand = `matlab -batch ${scriptName}`;
+    const moveCommand = `move ${dir1 + fname1} ${dir2}`;
+    console.log(`COMMAND: cd ${dir1} && ${matlabCommand}`);
+    try{
+    const proc = exec(`cd ${dir1} && ${matlabCommand}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        reject(error);
+      } else {
+        resolve(stdout);
+      }
+    });
+    }catch(error){console.log(error)}
+  });
+}
+
   function genStandardFileName(json_obj){
     //console.log(json_obj)
     console.log("gen fnmae")
@@ -380,5 +429,47 @@ function genCommand(obj){
   return cmd_str
 }
 
+
+function genCommand1(obj){
+  cmd_str=`"wrapper_loop_modeller2_validator('${obj.pdb_id}','${genStandardFileName(obj)}','${obj.chain}',${obj.segbeg},${obj.segend},${Arr2dtoMLstr(obj.target_residues_phi)},${Arr2dtoMLstr(obj.target_residues_psi)},${ArrtoMLstr(obj.constr_residues_phi)},${ArrtoMLstr(obj.constr_residues_psi)},${obj.itterations});exit;"`
+  console.log(cmd_str)
+  return cmd_str
+}
+
+function sanitizeInput(user_str){
+  specialChars=['&', '|', '(', ')', '<', '>', '^', '%', '!', '@', ',', ';', '=', '+', '[', ']', '{', '}', '`', '~', '\'', '"'];
+  res_str=user_str
+  for(var i =0; i<specialChars.length; i++){
+    res_str=res_str.replace(specialChars[i], '')
+  }
+  return res_str
+}
+
+function sanitizeInputObj(user_obj){
+  if("fname" in user_obj){
+    new_fname=sanitizeInput(user_obj.fname)
+  }
+  if( "chain" in user_obj){
+    new_chain=sanitizeInput(user_obj.chain)
+  }
+  if("pdb_id" in user_obj){
+    new_pdbid=sanitizeInput(user_obj.pdb_id)
+
+  }
+  obj = {
+    pdb_id : new_pdbid,
+    fname : new_fname,
+    chain : new_chain,
+    segbeg: user_obj.segbeg,
+    segend: user_obj.segend,
+    target_residues_phi:user_obj.target_residues_phi,
+    target_residues_psi: user_obj.target_residues_psi,
+    constr_residues_phi:user_obj.constr_residues_phi,
+    constr_residues_psi: user_obj.constr_residues_psi,
+    itterations: user_obj.itterations
+  }
+
+  return obj
+}
 init()
 module.exports = router;

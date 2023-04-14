@@ -1,18 +1,20 @@
+//import { text } from "express"
 
 var left_crtl = true
 var width_crtl = true
-var current_loop=''
-var highted=false;
+var current_loop='290-301'
+var highted=false
 
 window.onload = function() { 
-  window.onresize = handleWindowSize;
+window.onresize = handleWindowSize;
 
-  document.getElementById("right window").checked = false;
-  document.getElementById("left window").checked = true;
-  document.getElementById("sync").checked=false;
-  document.getElementById("highlight").checked=false;
+document.getElementById("right window").checked = false;
+document.getElementById("left window").checked = true;
+document.getElementById("sync").checked=false;
+document.getElementById("highlight").checked=false;
   
 w =Number( window.innerWidth)
+
 if(w<860){
  size_inital=400
  document.getElementById("left_label").textContent="up"
@@ -50,34 +52,46 @@ if(w<860){
       );
 
 document.getElementById("third").innerHTML+=Jmol.jmolRadioGroup(jmolApplet0, [["set background white", "white", true],["set background black", "black"]])
+document.getElementById("third").innerHTML+=Jmol.jmolBr(jmolApplet0)
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; cartoon only", "cartoon")
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; wireframe -0.25", "stick")
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; spacefill only;spacefill 23%;wireframe 0.15","ball&stick")
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; spacefill","Van der Waals")
+document.getElementById("third").innerHTML+=Jmol.jmolBr(jmolApplet0)
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; color cpk", "cpk color") 
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; color group", "group color")
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; color amino", "amino color")
+document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; color structure", "structure color")
+
 document.getElementById("fifth").innerHTML+=Jmol.jmolRadioGroup(jmolApplet1, [["set background white", "white", true],["set background black", "black"]])
+document.getElementById("fifth").innerHTML+=Jmol.jmolBr(jmolApplet1)
 
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"cartoon only")
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"wireframe -0.25", "stick")
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"spacefill only;spacefill 23%;wireframe 0.15","ball&stick")
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"spacefill","Van der Waals")
-
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"color cpk")
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"color group")
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"color amino")
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"color structure")
-
-document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim play")
-document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off")
-document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "if (animationFPS > 2) anim fps @{animationFPS/2};")
-document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "if (animationFPS > 2) anim fps @{animationFPS/2};")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim play", "play")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off", "stop")
 document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;anim rewind#;","First")
 document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;frame prev", "Prev")
 document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;frame next", "Next")
 document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;frame last", "Last")
 document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;frame all", "All")
-document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "loop frame 1;anim mode loop;frame 1;frame play")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim mode loop;frame 1;anim play", "loop")
+document.getElementById("fifth").innerHTML+=Jmol.jmolBr(jmolApplet1)
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; cartoon only", "cartoon")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; wireframe -0.25", "stick")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; spacefill only;spacefill 23%;wireframe 0.15","ball&stick")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; spacefill","Van der Waals")
+document.getElementById("fifth").innerHTML+=Jmol.jmolBr(jmolApplet1)
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; color cpk", "cpk color") 
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; color group", "group color")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; color amino", "amino color")
+document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; color structure", "structure color")
 
 document.getElementById("Rotate").addEventListener("click", rotate_model);
 document.getElementById("ResetView").addEventListener("click", reset_view)
 //document.getElementById("Highlight segment").addEventListener("click", highlight)
 document.getElementById("run_cmd").addEventListener("click", run_jmol_script);
 document.getElementById("load2model").addEventListener("click", load_pdb);
+document.getElementById("seqNumBtn").addEventListener("click", load_pdb);
+document.getElementById("seqClrBtn").addEventListener("click", load_pdb);
 
 
 };
@@ -163,7 +177,9 @@ async function Load(){
   Jmol.script(jmolApplet0, "load "+data.redirectUrl)
 }
 
-const re = /BEG_\d+_END_\d+/;
+var re = /BEG_\d+_END_\d+/;
+
+var re1 = /seq \d+/;
 
 async function load_from_server(event){
   console.log(event)
@@ -181,8 +197,6 @@ async function load_from_server(event){
   result5 = result4.replace('__','-')
   result6 = result5.trim()
   current_loop=result6
-
-
 
   
   console.log(parent.querySelectorAll('p')[0].innerText)
@@ -228,7 +242,7 @@ async function Search(){
       p = document.createElement('p');
       p.style.display='none'
       p.textContent=data[i].fname  
-      a.textContent = data[i].pdb_id + " " + data[i].segbeg + " " + data[i].segend + " "+ data[i].target_residues_phi 
+      a.textContent = "Beg: "+ data[i].segbeg + " End: " + data[i].segend + " Targ φ: "+ data[i].target_residues_phi + " Targ ψ : "+ data[i].target_residues_psi + " Cnstr φ: "+ data[i].constr_residues_phi+ + " Cnstr ψ: "+ data[i].constr_residues_psi   
       a.onclick = load_from_server
       innerDiv.appendChild(a)
       innerDiv.appendChild(p)
@@ -278,7 +292,7 @@ function HighlightLoop(){
     highted=true
   Jmol.script(
     jmolApplet0,
-    "select " +current_loop+ "; color orange"
+    "select " +current_loop+ "; color lawngreen"
 );
   }else{
     highted=false
@@ -288,4 +302,33 @@ function HighlightLoop(){
   );
   }
 
+}
+
+function get_torsion_angle(seqNum){
+
+  phi= Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0].polymers[0].monomers[seqNum].phi
+  psi= Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0].polymers[0].monomers[seqNum].psi
+  //console.log("phi " +phi + " psi " + psi)
+  return {"phi" : phi , "psi": psi}
+}
+function show_torsion(){
+  num=document.getElementById('seqNum').value
+  tors = get_torsion_angle(num)
+  console.log(psi)
+  outDiv=document.getElementById('search_result1')
+  p = document.createElement('p');
+  p.innerText=`seq ${num}, φ ${tors.phi.toFixed(8)}, ψ ${tors.psi.toFixed(8)}`
+  p.onclick = hilight_sgl
+  outDiv.appendChild(p)
+
+}
+function clear_torsion(){
+  document.getElementById('search_result1').innerHTML=''
+}
+function hilight_sgl(event){
+  text=event.target.innerText.match(re1)[0]
+  text=text.replace("seq", "")
+  text=text.trim()
+  //console.log(text)
+  Jmol.script(jmolApplet0, "select "+text+ "; color lawngreen")
 }

@@ -101,14 +101,12 @@ function remove_constr_psi() {
 }
 
 async function submit_to_server() {
-	console.log("submit()")
 	let pdb_id = document.getElementById("pdb_txt_input").value;
-	let output_fname = document.getElementById("fname").value;
 	let chain = document.getElementById("chain").value;
 	let segbeg = Number.parseInt(document.getElementById("segbeg").value);
 	let segend = Number.parseInt(document.getElementById("segend").value);
 	let itterations = Number.parseInt(document.getElementById("itterations").value);
-	let isValid = validateInput(pdb_id, output_fname, chain, segbeg, segend, itterations);
+	let isValid = validateInput(pdb_id, chain, segbeg, segend, itterations);
 
 	if (isValid) {
 		console.log("send json");
@@ -163,16 +161,11 @@ function showError(msg) {
 	document.getElementById("error_info").style.visibility = "visible"
 }
 
-function validateInput(pdb_id, fname, chain, segbeg, segend, itterations) {
+function validateInput(pdb_id, chain, segbeg, segend, itterations) {
 	// is pdb_id a 4 character string
 	pdbid_is_4char = (typeof pdb_id === 'string' || pdb_id instanceof String) && pdb_id.length == 4
 	if (!pdbid_is_4char) {
 		showError("pdb_id is invalid")
-	}
-	//is fname a string 
-	fname_is_string = (typeof fname === 'string' || fname instanceof String)
-	if (!fname_is_string) {
-		showError("fname invalid")
 	}
 	//is chain a string / character (length = 1)
 	chain_is_1char = (typeof chain === 'string' || chain instanceof String) && chain.length == 1
@@ -215,7 +208,7 @@ function validateInput(pdb_id, fname, chain, segbeg, segend, itterations) {
 	//is number of pairs in phi const and phi const < segend - segbeg
 
 	//check no residues are being targeted and constrained 
-	return pdbid_is_4char & fname_is_string & chain_is_1char & segbeg_is_num & segend_is_num & itterations_is_num & lengths_fit
+	return pdbid_is_4char  & chain_is_1char & segbeg_is_num & segend_is_num & itterations_is_num & lengths_fit
 
 }
 
@@ -248,7 +241,6 @@ function printStacks() {
 
 function setDefault() {
 	document.getElementById("pdb_txt_input").value = "1ADG";
-	document.getElementById("fname").value = "1ADG_A_201_310_PHITARGS_291_-90_292_-110_293_-64_294_-90_PSITARGS_291_122_292_-35_293_147_PHICONSTR_295_296_PSICONSTR_294_295_INTR_10000"
 	document.getElementById("chain").value = "A";
 	document.getElementById("segbeg").value = 290;
 	document.getElementById("segend").value = 301;
@@ -294,20 +286,13 @@ function jmol_isReady() {
 		beg = beg - 1
 	}
 	for (i = beg; i <= end; i++) {
-		console.log("getting phi psi")
-		phis.push(Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0].polymers[0].monomers[i].phi)
-		psis.push(Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0].polymers[0].monomers[i].psi)
 		torsions.push(Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0].polymers[0].monomers[i].phi)
 		torsions.push(Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0].polymers[0].monomers[i].psi)
 
 	}
-	console.log("finshed loop ")
-	document.getElementById("show_initial").style.setProperty("visibility", "visible")
-	document.getElementById("show_initial1").style.setProperty("visibility", "visible")
+
 	document.getElementById("show_tors").style.setProperty("visibility", "visible")
 
-	document.getElementById("intial_phis").innerHTML = phis
-	document.getElementById("intial_psis").innerHTML = psis
 	document.getElementById("intial_tosions").innerHTML = torsions
 
 }
@@ -318,8 +303,8 @@ function show_initial_torsions() {
 	pdbid = document.getElementById("pdb_txt_input").value
 	console.log(pdbid)
 	var JmolInfo = {
-		width: 600,
-		height: 600,
+		width: 300,
+		height: 300,
 		//serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
 		use: "HTML5",
 		readyFunction: jmol_isReady,
@@ -377,3 +362,32 @@ function genStandardFileName(json_obj){
 	res=res+".pdb"
     return res
     }
+
+	function get_torsion_angle(seqNum){
+
+		phi= Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0].polymers[0].monomers[seqNum].phi
+		psi= Jmol.getPropertyAsArray(jmolApplet0, "polymerInfo").models[0].polymers[0].monomers[seqNum].psi
+		//console.log("phi " +phi + " psi " + psi)
+		return {"phi" : phi , "psi": psi}
+	  }
+	  function show_torsion(){
+		num=document.getElementById('seqNum').value
+		tors = get_torsion_angle(num)
+		console.log(psi)
+		outDiv=document.getElementById('search_result1')
+		p = document.createElement('p');
+		p.innerText=`seq ${num}, φ ${tors.phi.toFixed(8)}, ψ ${tors.psi.toFixed(8)}`
+		p.onclick = hilight_sgl
+		outDiv.appendChild(p)
+	  
+	  }
+	  function clear_torsion(){
+		document.getElementById('search_result1').innerHTML=''
+	  }
+	  function hilight_sgl(event){
+		text=event.target.innerText.match(re1)[0]
+		text=text.replace("seq", "")
+		text=text.trim()
+		//console.log(text)
+		Jmol.script(jmolApplet0, "select "+text+ "; color lawngreen")
+	  }

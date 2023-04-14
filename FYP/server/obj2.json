@@ -1,0 +1,52 @@
+{
+    "pdb_id": "1ADG",
+    "fname": "1ADG_A_290_301_PHITARGS_291_-90_292_-110_293_-64_294_-90_PSITARGS_291_122_292_-35_293_147_PHICONSTR_295_296_PSICONSTR_294_295_INTR_10000.PDB",
+    "chain": "A",
+    "segbeg": 290,
+    "segend": 301,
+    "target_residues_phi": [
+      [
+        291,
+        -90
+      ],
+      [
+        292,
+        -110
+      ],
+      [
+        293,
+        -64
+      ],
+      [
+        294,
+        -90
+      ]
+    ],
+    "target_residues_psi": [
+      [
+        291,
+        122
+      ],
+      [
+        292,
+        -35
+      ],
+      [
+        293,
+        147
+      ]
+    ],
+    "constr_residues_phi": 
+      [
+        295,
+        296
+      ]
+    ,
+    "constr_residues_psi": 
+      [
+        294,
+        295
+      ]
+    ,
+    "itterations": 10000
+  }

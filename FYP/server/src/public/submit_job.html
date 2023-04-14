@@ -6,23 +6,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="styles.css" />
     <title>submit job</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <script type="text/javascript" src="submit_job.js"></script>
      <script type="text/javascript" src="JSmol.min.js"></script>
     <script type="text/javascript" src="js/JSmolJME.js"></script>
     <script type="text/javascript" src="jsme/jsme/jsme.nocache.js"></script>
+    <style>
+        body{
+          background-color: lightgrey;
+        }
+        .first {
+        background-color: rgb(189, 232, 247);
+        border: 1px solid black;
+        overflow: auto;
+
+      }
+      .second {
+        height: 300px;
+        background-color: lightgreen;
+        border: 1px solid black;
+
+
+      }
+      .third {
+        background-color: lightblue;
+        border: 1px solid black;
+
+      }
+    </style>
 </head>
 <body>
-    <ul>
-        <li id="nav_item"><a href="submit_job.html">Submit Job</a></li>
-        <li id="nav_item"><a href="browse_structers.html">Browse database</a></li>
-        <li id="nav_item"><a href="view_structure.html">Structure viewer</a></li>
-    </ul>
-    <div id="applet1"></div> 
+    <nav class="navbar navbar-expand navbar-light" style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" href="./home.html">Home Page</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="./submit_job.html">Submit Job</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="./view_structure.html">View Structure</a>
+              </li>
+            </ul>
+        </div>
+      </nav>
+
+    <div class="first">
     <acronym title="PDBID">
     <input id="pdb_txt_input" type="text" value="PDB_ID" />
-    </acronym>
-    <acronym title="file name (unused)">
-    <input id="fname" type="text" value="output file name" />
     </acronym>
     <acronym title="chain">
     <input id="chain" type="text" value="A" />
@@ -34,18 +66,24 @@
         <input id="segend" type="number" value="segend" />
     </acronym>
     <button onclick="show_initial_torsions()" id="show_torsion_btn">Show Initial Torsions</button>
-    <p id="show_initial">Inital Phi torsions</p>
-    <p id="intial_phis"></p>
-    <p id="show_initial1">Inital Psi torsions</p>
-    <p id="intial_psis"></p>
+
     <p id="show_tors">Combined torsions</p>
     <p id="intial_tosions"></p>
+    <input type="number" id="seqNum" >
+    <label for="seqNumBtn">find torsion</label>
+    <input type="button" id="seqNumBtn" value="Get" onclick="show_torsion()">
+    <input type="button" id="seqClearBtn" value="Cear" onclick="clear_torsion()">
+    <div id="search_result1"></div>
 
+    </div> 
+
+<div class="second" id="second">    
     <div id="appdiv"></div>
-<acronym title="The number of itterations">
-    <input id="itterations" type="number" value="10000" />
-</acronym>
-<br>
+</div>
+
+<div class="third">
+
+
 <acronym title="amnio acid index of phi target">
     <input type="number"  id="target_residues_phi_idx" name="target_residues_phi_idx"  value=""/>
 </acronym>
@@ -76,10 +114,15 @@
     <button  onclick="add_constr_psi()" id="add_constr_residues_psi">add contrain psi</button>
     <button  onclick="remove_constr_psi()" id="add_constr_residues_psi">remove contrain psi</button>
     <p id="constr_residues_psi_string"></p>
+
+<acronym title="The number of itterations">
+    <input id="itterations" type="number" value="10000" />
+</acronym>
     
     <Button onclick="submit_to_server()">submit job</Button>
     <div id="error_info">
         <p id="err_txt"></p>
     </div>
+</div>
 </body>
 </html>

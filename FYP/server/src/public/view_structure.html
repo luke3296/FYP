@@ -11,6 +11,9 @@
     <script type="text/javascript" src="view_structure.js"></script>
 
     <style>
+      body{
+        background-color: lightgrey;
+      }
 
       .first {
         width: 600px;
@@ -34,7 +37,7 @@
       .third {
         width: 400px;
         height: 450px;
-        background-color: lightblue;
+        background-color: lightgreen;
         border: 1px solid black;
         position:absolute;
         top : 660px;
@@ -43,7 +46,7 @@
       .fourth {
         width: 400px;
         height: 450px;
-        background-color: lightgrey;
+        background-color: lightblue;
         border: 1px solid black;
         position:absolute;
         top : 660px;
@@ -52,7 +55,7 @@
       .fifth{
         width: 400px;
         height: 450px;
-        background-color: rgb(97, 214, 97);
+        background-color: lightgreen;
         border: 1px solid black;
         position:absolute;
         top : 660px;
@@ -60,7 +63,16 @@
       }
       #search_result {
         width:300px;
-        height:200px;
+        height:100px;
+        background: #82C3EE;
+        overflow: auto;
+        border: 1px solid black;
+        width: 100%;
+        aspect-ratio: 0.25;
+      }
+      #search_result1 {
+        width:300px;
+        height:100px;
         background: #82C3EE;
         overflow: auto;
         border: 1px solid black;
@@ -75,6 +87,9 @@
       }
 
       @media only screen and (max-width: 860px) {
+        body{
+        background-color: lightgray;
+      }
         .first {
         width: 398px;
         height: 398px;
@@ -115,7 +130,7 @@
       .fifth{
         width: 398px;
         height: 398px;
-        background-color: rgb(97, 214, 97);
+        background-color: lightgreen;
         border: 1px solid black;
         position:absolute;
         top : 460px;
@@ -123,7 +138,16 @@
       }
       #search_result {
         width:300px;
-        height:200px;
+        height:100px;
+        background: #82C3EE;
+        overflow: auto;
+        border: 1px solid black;
+        width: 100%;
+        aspect-ratio: 0.25;
+      }
+      #search_result1 {
+        width:300px;
+        height:100px;
         background: #82C3EE;
         overflow: auto;
         border: 1px solid black;
@@ -142,18 +166,30 @@
   </head>
   <body>
     
-  <ul>
-    <li id="nav_item"><a href="./submit_job.html">Submit Job</a></li>
-    <li id="nav_item"><a href="./browse_structers.html">Browse database</a></li>
-    <li id="nav_item"><a href="./view_structure.html">Structure viewer</a></li>
-</ul>
-      <div class="first" id="first">    
-        <div id="appdiv1"></div>
+    <nav class="navbar navbar-expand navbar-light" style="background-color: #e3f2fd;">
+      <div class="container-fluid">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" href="./home.html">Home Page</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="./submit_job.html">Submit Job</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="./view_structure.html">View Structure</a>
+            </li>
+          </ul>
       </div>
+    </nav>
 
-      <div class="second" id="second" >
-        <div id="appdiv2"></div>
-      </div>
+
+    <div class="first" id="first">    
+      <div id="appdiv1"></div>
+    </div>
+
+    <div class="second" id="second" >
+      <div id="appdiv2"></div>
+    </div>
 
       <div class="third" id="third">
           <input type="button" id="load2model" value="Load Model">
@@ -162,10 +198,12 @@
           <input type="button" id="Rotate" value="Rotate">
           <input type="button" id="ResetView" value="Reset View">
           <br>
-          Start:
-          <input type="number" id="start" min="0" max="1000">
-          End:
-          <input type="number" id="end" min="0" max="1000">
+          <input type="number" id="seqNum" >
+          <label for="seqNumBtn">find torsion</label>
+          <input type="button" id="seqNumBtn" value="Get" onclick="show_torsion()">
+          <input type="button" id="seqClearBtn" value="Cear" onclick="clear_torsion()">
+          <div id="search_result1"></div>
+
       </div>
 
       <div class="fourth" id="fourth">
@@ -174,7 +212,7 @@
         <label id="right_label" for="right window">right</label>
         <input id="right window" checked="flase" type="checkbox" onclick="toggle_ctr2()">
         <input type="text" id="cmd_str">
-        <input type="button" id="run_cmd" value="Run Command" onclick="run_jmol_script()">
+        <input type="button" id="run_cmd" value="Run" onclick="run_jmol_script()">
         <br>
         <label for="sync">Sync</label>
         <input type="checkbox" id="sync" checked="false" onchange="Sync()">
