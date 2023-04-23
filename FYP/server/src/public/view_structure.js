@@ -154,6 +154,8 @@ document.getElementById("loadAltBtn").addEventListener("click", load_alt);
 document.getElementById("ShowHeader").addEventListener("click", show_header);
 document.getElementById("close_modal").addEventListener("click", close_modal);
 document.getElementById("search_db_btn").addEventListener("click", Search);
+document.getElementById("sync").addEventListener("click", Sync);
+document.getElementById("highlight").addEventListener("click", HighlightLoop);
 
 //document.getElementById("show_labels").addEventListener("change", label_phi_psi_togg);
 
@@ -360,6 +362,7 @@ function handleWindowSize(){
   }
 }
 
+//bug here highlight loop resets the current color
 function HighlightLoop(){
   if(!highted){
     highted=true
