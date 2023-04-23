@@ -7,6 +7,10 @@ const cors = require('cors');
 const path = require('path');
 //instead of bodyParser
 
+//add server side rendering
+//const ejs = require('ejs');
+
+
 
 require('dotenv').config();
 
@@ -32,13 +36,30 @@ app.use('/public', express.static(path.join(__dirname, 'public')))
 // add the examples below, can remove later
 app.use('/public/examples', express.static(path.join(__dirname, 'public')))
 
+
+app.set('view engine', 'ejs');
+/*
 app.get('/', (req, res) => {
   res.json({
     message: '🦄🌈✨👋🌎🌍🌏✨🌈🦄',
   });
 });
-
+*/
 app.use('/api/v1', api);
+// app.set('views', './public');
+
+// app.get('/view_structure', (req, res) => {
+//   // Set the host variable based on the request's hostname or any other logic
+//   const host = req.hostname;
+//   // Render the view_structure.ejs file with the host variable
+//   res.render('view_structure', { host });
+// });
+// app.get('/submit_job', (req, res) => {
+//   // Set the host variable based on the request's hostname or any other logic
+//   const host = req.hostname;
+//   // Render the view_structure.ejs file with the host variable
+//   res.render('submit_job', { host });
+// });
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);

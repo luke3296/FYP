@@ -1,9 +1,16 @@
+//server_name will be reassigned to the current host when the page loads
 server_name = "http://localhost:5123/"
+post_job_endpoint='/api/v1/pdbs/'
 
 let target_residues_phi_stack = [];
 let target_residues_psi_stack = [];
 let constr_residues_phi_stack = [];
 let constr_residues_psi_stack = [];
+
+window.onload=function(){
+	console.log(window.location.host)
+	server_name=window.location.host
+}
 
 function add_target_phi() {
 	console.log("call")
@@ -134,8 +141,9 @@ async function submit_to_server() {
 			"constr_residues_psi": constr_residues_psi_stack,
 			"itterations": itterations
 		}
-        //console.log(obj)
-		await fetch('http://localhost:5123/api/v1/pdbs/', {
+        //console.log(obj)http://
+		//await fetch('http://localhost:5123/api/v1/pdbs/', {
+		await fetch('http://'+server_name+post_job_endpoint, {
 				method: 'POST',
 				headers: {
 					'Accept': 'application/json, text/plain, */*',

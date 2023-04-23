@@ -3,7 +3,11 @@
 var left_crtl = true
 var width_crtl = true
 var current_loop='290-301'
+current_loop_fname='PDBID_1ADG_CHAIN_A_BEG_290_END_301_PHITARGS_291_-90_292_-110_293_-64_294_-90_PSITARGS_291_122_292_-35_293_147_PHICONSTR_295_296_PSICONSTR_295_296_ITTR_10000.pdb'
 var highted=false
+var showing_labels=false
+var cmd_hist=''
+
 
 window.onload = function() { 
 window.onresize = handleWindowSize;
@@ -12,6 +16,8 @@ document.getElementById("right window").checked = false;
 document.getElementById("left window").checked = true;
 document.getElementById("sync").checked=false;
 document.getElementById("highlight").checked=false;
+document.getElementById("show_labels").checked=false;
+
   
 w =Number( window.innerWidth)
 
@@ -51,47 +57,108 @@ if(w<860){
           JmolInfo
       );
 
+document.getElementById("third").innerHTML+=Jmol.jmolBr(jmolApplet0)
+document.getElementById("third").innerHTML+=`Background color : `
 document.getElementById("third").innerHTML+=Jmol.jmolRadioGroup(jmolApplet0, [["set background white", "white", true],["set background black", "black"]])
 document.getElementById("third").innerHTML+=Jmol.jmolBr(jmolApplet0)
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; cartoon only", "cartoon")
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; wireframe -0.25", "stick")
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; spacefill only;spacefill 23%;wireframe 0.15","ball&stick")
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; spacefill","Van der Waals")
-document.getElementById("third").innerHTML+=Jmol.jmolBr(jmolApplet0)
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; color cpk", "cpk color") 
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; color group", "group color")
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; color amino", "amino color")
-document.getElementById("third").innerHTML+=Jmol.jmolButton(jmolApplet0,"select * ; color structure", "structure color")
+document.getElementById("third").innerHTML+=`Style : `
+document.getElementById("third").innerHTML+=Jmol.jmolMenu(jmolApplet0, [
+  ["select * ; spacefill only;spacefill 23%;wireframe 0.15", "ball and stick"],
+  ["select * ; cartoon only",  "cartoon"],
+  ["select * ; wireframe -0.25", "stick"],
+  ["select * ; spacefill", "van ser walls"]
+]);
 
+document.getElementById("third").innerHTML+=Jmol.jmolBr(jmolApplet0)
+
+document.getElementById("third").innerHTML+=`Color : `
+document.getElementById("third").innerHTML+=Jmol.jmolMenu(jmolApplet0, [
+  ["select * ; color cpk", "cpk"],
+  ["select * ; color group",  "group"],
+  ["select * ; color amino", "amino"],
+  ["select * ; color structure", "structure"],
+  ["select * ; color chain", "chain"]
+]);
+
+document.getElementById("third").innerHTML+=Jmol.jmolBr(jmolApplet0)
+
+document.getElementById("third").innerHTML+=`View from : `
+document.getElementById("third").innerHTML+=Jmol.jmolMenu(jmolApplet0, [
+[ "reset", "Front"], 
+[ "moveto 1 1 0 0 180 #Back", "Back"],
+[ "moveto 1 1 0 0 -90 #Top", "Top"],
+[ "moveto 1 1 0 0 90 #Bottom", "Bottom"],
+[ "moveto 1 0 1 0 90 #Left", "Left"],
+[ "moveto 1 0 1 0 -90 #Right", "Right"],
+]);
+
+document.getElementById("fifth").innerHTML+=`Background color : `
 document.getElementById("fifth").innerHTML+=Jmol.jmolRadioGroup(jmolApplet1, [["set background white", "white", true],["set background black", "black"]])
 document.getElementById("fifth").innerHTML+=Jmol.jmolBr(jmolApplet1)
-
+document.getElementById("fifth").innerHTML+=`Anim : `
 document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim play", "play")
 document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off", "stop")
 document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;anim rewind#;","First")
 document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;frame prev", "Prev")
 document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;frame next", "Next")
 document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;frame last", "Last")
-document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;frame all", "All")
+//document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim off;frame all", "All")
 document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1, "anim mode loop;frame 1;anim play", "loop")
 document.getElementById("fifth").innerHTML+=Jmol.jmolBr(jmolApplet1)
-document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; cartoon only", "cartoon")
-document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; wireframe -0.25", "stick")
-document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; spacefill only;spacefill 23%;wireframe 0.15","ball&stick")
-document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; spacefill","Van der Waals")
-document.getElementById("fifth").innerHTML+=Jmol.jmolBr(jmolApplet1)
-document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; color cpk", "cpk color") 
-document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; color group", "group color")
-document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; color amino", "amino color")
-document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; color structure", "structure color")
+//document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; cartoon only", "cartoon")
+//document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; wireframe -0.25", "stick")
+//document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; spacefill only;spacefill 23%;wireframe 0.15","ball&stick")
+//document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; spacefill","Van der Waals")
+document.getElementById("fifth").innerHTML+=`Style : `
 
+document.getElementById("fifth").innerHTML+=Jmol.jmolMenu(jmolApplet1, [
+  ["select * ; spacefill only;spacefill 23%;wireframe 0.15", "ball and stick"],
+  ["select * ; cartoon only",  "cartoon"],
+  ["select * ; wireframe -0.25", "stick"],
+  ["select * ; spacefill", "van ser walls"]
+]);
+
+document.getElementById("fifth").innerHTML+=Jmol.jmolBr(jmolApplet1)
+//document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; color cpk", "cpk color") 
+//document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; color group", "group color")
+//document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; color amino", "amino color")
+//document.getElementById("fifth").innerHTML+=Jmol.jmolButton(jmolApplet1,"select * ; color structure", "structure color")
+document.getElementById("fifth").innerHTML+=`Color : `
+
+document.getElementById("fifth").innerHTML+=Jmol.jmolMenu(jmolApplet1, [
+  ["select * ; color cpk", "cpk"],
+  ["select * ; color group",  "group"],
+  ["select * ; color amino", "amino"],
+  ["select * ; color structure", "structure"],
+  ["select * ; color chain", "chain"]
+]);
+document.getElementById("fifth").innerHTML+=Jmol.jmolBr(jmolApplet1)
+document.getElementById("fifth").innerHTML+=`View from : `
+document.getElementById("fifth").innerHTML+=Jmol.jmolMenu(jmolApplet1, [
+  [ "reset", "Front"], 
+  [ "moveto 1 1 0 0 180 #Back", "Back"],
+  [ "moveto 1 1 0 0 -90 #Top", "Top"],
+  [ "moveto 1 1 0 0 90 #Bottom", "Bottom"],
+  [ "moveto 1 0 1 0 90 #Left", "Left"],
+  [ "moveto 1 0 1 0 -90 #Right", "Right"],
+  ]);
+  
 document.getElementById("Rotate").addEventListener("click", rotate_model);
 document.getElementById("ResetView").addEventListener("click", reset_view)
 //document.getElementById("Highlight segment").addEventListener("click", highlight)
 document.getElementById("run_cmd").addEventListener("click", run_jmol_script);
 document.getElementById("load2model").addEventListener("click", load_pdb);
-document.getElementById("seqNumBtn").addEventListener("click", load_pdb);
-document.getElementById("seqClrBtn").addEventListener("click", load_pdb);
+document.getElementById("seqNumBtn").addEventListener("click", show_torsion);
+document.getElementById("seqClearBtn").addEventListener("click", clear_torsion);
+document.getElementById("loadAltBtn").addEventListener("click", load_alt);
+document.getElementById("ShowHeader").addEventListener("click", show_header);
+document.getElementById("close_modal").addEventListener("click", close_modal);
+document.getElementById("search_db_btn").addEventListener("click", Search);
+
+//document.getElementById("show_labels").addEventListener("change", label_phi_psi_togg);
+
+//jmolApplet1.jmolSetCallback(jmolApplet1, "animframecallback", "label_phi_psi");
+Jmol.script(jmolApplet1,'set animFrameCallback "label_phi_psi"')
 
 
 };
@@ -153,11 +220,13 @@ function run_jmol_script() {
         console.log("run jmol cmd")
         var cmd = document.getElementById("cmd_str").value;
         console.log("cmd" +cmd)
+        cmd_hist += "cmd: " +cmd+"\n\n"
         if(left_crtl){
         Jmol.script(jmolApplet0, cmd);
         }else{
         Jmol.script(jmolApplet1, cmd);
         }
+        document.getElementById("search_result2").innerText+=cmd+"\n"
     }
 
 
@@ -208,6 +277,7 @@ async function load_from_server(event){
     alert("server err that file doesn't exsist but is reference in the database")
   }else{
     Jmol.script(jmolApplet1, "load "+exsists)
+    current_loop_fname=fname
   }
 }
 async function check_file_exsists(fname_){
@@ -226,6 +296,9 @@ async function check_file_exsists(fname_){
 
 async function Search(){
   query=document.getElementById("search_q").value
+  q_beg=document.getElementById("search_beg").value
+  q_end=document.getElementById("search_end").value
+  console.log(q_end)
   query="http://localhost:5123/api/v1/pdbs/?pdbid="+query.toUpperCase()
   fetch(query)
   .then(response => response.json())
@@ -317,7 +390,7 @@ function show_torsion(){
   console.log(psi)
   outDiv=document.getElementById('search_result1')
   p = document.createElement('p');
-  p.innerText=`seq ${num}, φ ${tors.phi.toFixed(8)}, ψ ${tors.psi.toFixed(8)}`
+  p.innerText=`seq ${num}, φ ${tors.phi.toFixed(1)}, ψ ${tors.psi.toFixed(1)}`
   p.onclick = hilight_sgl
   outDiv.appendChild(p)
 
@@ -331,4 +404,75 @@ function hilight_sgl(event){
   text=text.trim()
   //console.log(text)
   Jmol.script(jmolApplet0, "select "+text+ "; color lawngreen")
+}
+
+
+
+function label_phi_psi_togg(){
+  if(showing_labels){
+    showing_labels=false
+    document.getElementById("show_labels").checked = false;
+
+    //Jmol.script(jmolApplet1,'set animFrameCallback "None"')
+   // Jmol.script(jmolApplet1,`select ${start}-${end}.ca ; label ""`)
+
+  }else{
+    showing_labels=true
+    document.getElementById("show_labels").checked = true;
+    Jmol.script(jmolApplet1,'set animFrameCallback "label_phi_psi"')
+  }
+  console.log(showing_labels)
+}
+
+function label_phi_psi(){
+  if (showing_labels){
+  loop=current_loop.split("-")
+  start=parseInt(loop[0])
+  end=parseInt(loop[1])
+  Jmol.script(jmolApplet1,`select ${start}-${end}.ca ; label φ %.0[phi] ψ %.0[psi]`)
+  //for(var i =start; i< end;i++ ){
+  //  Jmol.script(jmolApplet1,  ` select ${i} ; label "YO"`)
+ // }
+}else{
+  Jmol.script(jmolApplet1,`select ${start}-${end}.ca ; label ""`)
+  
+}
+  /*
+  Jmol.script(jmolApplet1, 
+ `select protein;
+  measure phiPsiSelected;
+  for (var i = 1; i <= _atomCount; i++) {
+    if (_atomName[i] == "CA") {
+      label %a "Phi:%.1f\nPsi:%.1f" %({phiPsiSelected[i-1][0]}, {phiPsiSelected[i-1][1]})
+    }
+  }`)
+  */
+
+}
+async function load_alt(event){
+  console.log(event)
+  
+  altfname=current_loop_fname.replace('.pdb', 'ALT')+'.pdb'
+  exsists=await check_file_exsists(altfname)
+  if(exsists == false){
+    alert("server err that file doesn't exsist but is reference in the database")
+  }else{
+    Jmol.script(jmolApplet1, "load "+exsists)
+  }
+}
+
+function show_header(){
+  console.log("show modal")
+  document.getElementById("modal_text").innerText=jmolApplet0._getPropertyAsString('fileHeader')
+  var modal = document.getElementById("myModal");
+  var span = document.getElementsByClassName("close")[0];
+  span.style.display="block"
+  modal.style.display = "block"
+}
+function close_modal(){
+  var modal = document.getElementById("myModal");
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+  span.style.display="none"
+  modal.style.display = "none";
 }

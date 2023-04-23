@@ -15,6 +15,9 @@
         background-color: lightgrey;
       }
 
+      H6{
+         text-align: center 
+      }
       .first {
         width: 600px;
         height: 600px;
@@ -79,16 +82,63 @@
         width: 100%;
         aspect-ratio: 0.25;
       }
+      #search_result2 {
+        width:300px;
+        height:100px;
+        background: #82C3EE;
+        overflow: auto;
+        border: 1px solid black;
+        width: 100%;
+        aspect-ratio: 0.25;
+      }
       #nav_item{
         display: inline;
       }
       #search_result a:hover {
         background-color: lightblue;
       }
+      .modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 9002; /* Sit on top */
+  left: 200;
+  top: 200;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: lightblue; /* Fallback color */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
 
       @media only screen and (max-width: 860px) {
         body{
         background-color: lightgray;
+      }
+      H6{
+         text-align: center 
       }
         .first {
         width: 398px;
@@ -154,11 +204,56 @@
         width: 100%;
         aspect-ratio: 0.25;
       }
+      #search_result2 {
+        width:300px;
+        height:100px;
+        background: #82C3EE;
+        overflow: auto;
+        border: 1px solid black;
+        width: 100%;
+        aspect-ratio: 0.25;
+      }
       #nav_item{
         display: inline;
       }
       #search_result a:hover {
         background-color: lightblue;
+      }
+      
+      .modal {
+          display: none; /* Hidden by default */
+          position: fixed; /* Stay in place */
+          z-index: 1; /* Sit on top */
+          left: 200;
+          top: 200;
+          width: 100%; /* Full width */
+          height: 100%; /* Full height */
+          overflow: auto; /* Enable scroll if needed */
+          background-color: lightblue; /* Fallback color */
+      }
+
+/* Modal Content/Box */
+      .modal-content {
+        background-color: #fefefe;
+         margin: 15% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; /* Could be more or less, depending on screen size */
+  }
+
+/* The Close Button */
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: blue;
+        text-decoration: none;
+        cursor: pointer;
       }
       }
 
@@ -192,40 +287,63 @@
     </div>
 
       <div class="third" id="third">
+        <h6>Protien Controls</h6>
           <input type="button" id="load2model" value="Load Model">
-          <input type="text" id="pdbcode_input">
-          <br>
-          <input type="button" id="Rotate" value="Rotate">
-          <input type="button" id="ResetView" value="Reset View">
+          <input type="text" id="pdbcode_input">  
+          (By PDB id)       
           <br>
           <input type="number" id="seqNum" >
           <label for="seqNumBtn">find torsion</label>
-          <input type="button" id="seqNumBtn" value="Get" onclick="show_torsion()">
-          <input type="button" id="seqClearBtn" value="Cear" onclick="clear_torsion()">
+          <input type="button" id="seqNumBtn" value="Get" >
+          <input type="button" id="seqClearBtn" value="Cear" >
           <div id="search_result1"></div>
+          <br>
+          <input type="button" id="Rotate" value="Rotate">
+          <input type="button" id="ResetView" value="Reset View">
+          <input type="button" id="ShowHeader" value="show header" >
+          <div id="myModal" class="modal">
+          <div class="modal_content" id="modal_content">
+            <span id="close_modal" class="close">X</span>
+            <p id="modal_text">Some text</p>
+            
+          </div>
+          </div>
 
       </div>
 
       <div class="fourth" id="fourth">
+        <h6>Joint Controls</h6>
         <label id="left_label" for="left window">left</label>
-        <input id="left window" checked="true" type="checkbox"  onclick="toggle_ctr1()">
+        <input id="left window" checked="true" type="checkbox"  >
         <label id="right_label" for="right window">right</label>
-        <input id="right window" checked="flase" type="checkbox" onclick="toggle_ctr2()">
+        <input id="right window" checked="flase" type="checkbox">
         <input type="text" id="cmd_str">
-        <input type="button" id="run_cmd" value="Run" onclick="run_jmol_script()">
+        <input type="button" id="run_cmd" value="Run" >
+        <br>
+        <div id="search_result2"></div>
         <br>
         <label for="sync">Sync</label>
-        <input type="checkbox" id="sync" checked="false" onchange="Sync()">
+        <input type="checkbox" id="sync" checked="false" >
         <br>
-        <label for="sync">Highlight Loop</label>
-        <input type="checkbox" id="highlight" checked="false" onchange="HighlightLoop()">
+        <label for="highlight">Highlight Loop</label>
+        <input type="checkbox" id="highlight" checked="false" >
+        
       </div>
 
       <div class="fifth" id="fifth">
+        <h6>Loop Controls</h6>
         <label for="text">pdb_id</label>
-        <input type="text" id="search_q">
-        <input type="button" id="search_db_btn" value="search" onclick="Search()">
+        <input type="text" id="search_q" style="width: 80px;">
+        Optional:
+        <input type="number" id="search_beg" style="width: 50px;">
+        <input type="number" id="search_end" style="width: 50px;">
+        <input type="button" id="search_db_btn" value="search" >
         <div id="search_result"></div>
+        <br>
+        <label for="show_labels">Show Phi Psi</label>
+        <input type="checkbox" id="show_labels" checked="false" >
+        <button id="loadAltBtn" >Load alt</button>
+        <br>
       </div>
 
   </body>
