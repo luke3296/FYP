@@ -10,6 +10,10 @@ let constr_residues_psi_stack = [];
 window.onload=function(){
 	console.log(window.location.host)
 	server_name=window.location.host
+	document.getElementById("original").addEventListener("click", setTheme)
+	document.getElementById("Solarised Dark").addEventListener("click", setTheme)
+	document.getElementById("Pastel").addEventListener("click", setTheme)
+	document.querySelector('.spinner-border').hidden=true
 }
 
 function add_target_phi() {
@@ -143,6 +147,7 @@ async function submit_to_server() {
 		}
         //console.log(obj)http://
 		//await fetch('http://localhost:5123/api/v1/pdbs/', {
+		document.querySelector('.spinner-border').hidden=false
 		await fetch('http://'+server_name+post_job_endpoint, {
 				method: 'POST',
 				headers: {
@@ -154,8 +159,14 @@ async function submit_to_server() {
 			  .then(res => {
                 if(res.redirectUrl == false){
                     console.log("no file found or error encountered")
+					document.querySelector('.spinner-border').hidden=true
+					document.getElementById("err_txt").innerText="The server encountered an error with these inputs"
                 }else{
 				    console.log(res.redirectUrl)
+					document.getElementById("err_txt").innerHTML=`The file was created, try search for it on the view_structure page. Or 
+					download here : <a href=${res.redirectUrl}>link</a>`
+					document.querySelector('.spinner-border').hidden=true
+
                 }
 
 			});
@@ -399,3 +410,79 @@ function genStandardFileName(json_obj){
 		//console.log(text)
 		Jmol.script(jmolApplet0, "select "+text+ "; color lawngreen")
 	  }
+
+	function setTheme(event) {
+	theme=event.target.id
+	console.log(theme)
+	switch(theme) {
+	  case 'original':
+		console.log("set og theme")
+		document.getElementById("first").style.backgroundColor  = 'lightblue';
+		document.getElementById("first").style.color = 'black';
+		document.getElementById("second").style.backgroundColor  = 'lightgreen';
+		document.getElementById("second").style.color = 'black';
+		document.getElementById("third").style.backgroundColor  = 'lightblue';
+		document.getElementById("third").style.color = 'black';
+		document.body.style.backgroundColor  = 'lightgrey';
+		
+		document.getElementById("nav").style.backgroundColor  ='#e3f2fd'
+	  //document.querySelectorAll('nav')[0].style.backgroundColor='#e3f2fd'
+	
+		inputs=document.querySelectorAll('input')
+		for(var i=0; i< inputs.length;i++){
+		  inputs[i].style.backgroundColor='white'
+		}
+		
+		inputs=document.querySelectorAll('.nav-link')
+		for(var i=0; i< inputs.length;i++){
+		  inputs[i].style.color='#839496'
+		}
+		
+		break;
+		case 'Solarised Dark':
+			document.getElementById("first").style.backgroundColor  = '#073642';
+			document.getElementById("first").style.color = '#839496';
+			document.getElementById("second").style.backgroundColor  = '#586e75';
+			document.getElementById("second").style.color = '#839496';
+			document.getElementById("third").style.backgroundColor  = '#073642';
+			document.getElementById("third").style.color = '#839496';
+			document.body.style.backgroundColor  = '#002b36';
+			
+			document.getElementById("nav").style.backgroundColor  ='#93a1a1'
+		  //document.querySelectorAll('nav')[0].style.backgroundColor='#e3f2fd'
+		
+			inputs=document.querySelectorAll('input')
+			for(var i=0; i< inputs.length;i++){
+			  inputs[i].style.backgroundColor='#586e75'
+			}
+			
+			inputs=document.querySelectorAll('.nav-link')
+			for(var i=0; i< inputs.length;i++){
+			  inputs[i].style.color='#cb4b16'
+			}
+		break;
+		case 'Pastel':
+		  console.log("set pastal theme")
+		  document.getElementById("first").style.backgroundColor  = '#A6B1E1';
+		  document.getElementById("first").style.color = '#424874';
+		  document.getElementById("second").style.backgroundColor  = '#9BA4B5';
+		  document.getElementById("second").style.color = '#424874';
+		  document.getElementById("third").style.backgroundColor  = '#A6B1E1';
+		  document.getElementById("third").style.color = '#424874';
+		  document.body.style.backgroundColor  = '#9BA4B5';
+		  
+		  document.getElementById("nav").style.backgroundColor  ='#9BA4B5'
+		//document.querySelectorAll('nav')[0].style.backgroundColor='#e3f2fd'
+	  
+		  inputs=document.querySelectorAll('input')
+		  for(var i=0; i< inputs.length;i++){
+			inputs[i].style.backgroundColor='#A6B1E1'
+		  }
+		  
+		  inputs=document.querySelectorAll('.nav-link')
+		  for(var i=0; i< inputs.length;i++){
+			inputs[i].style.color='black'
+		  }
+		break;
+	}
+	}

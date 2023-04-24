@@ -7,10 +7,16 @@ current_loop_fname='PDBID_1ADG_CHAIN_A_BEG_290_END_301_PHITARGS_291_-90_292_-110
 var highted=false
 var showing_labels=false
 var cmd_hist=''
+var theme='original'
+
+var server_name = "http://localhost:5123/"
+
 
 
 window.onload = function() { 
 window.onresize = handleWindowSize;
+server_name=window.location.host
+console.log(server_name)
 
 document.getElementById("right window").checked = false;
 document.getElementById("left window").checked = true;
@@ -156,6 +162,14 @@ document.getElementById("close_modal").addEventListener("click", close_modal);
 document.getElementById("search_db_btn").addEventListener("click", Search);
 document.getElementById("sync").addEventListener("click", Sync);
 document.getElementById("highlight").addEventListener("click", HighlightLoop);
+document.getElementById("show_labels").addEventListener("click", label_phi_psi_togg)
+document.getElementById("left window").addEventListener("click", toggle_ctr1)
+document.getElementById("right window").addEventListener("click", toggle_ctr2)
+document.getElementById("original").addEventListener("click", setTheme)
+document.getElementById("Solarised Dark").addEventListener("click", setTheme)
+document.getElementById("Pastel").addEventListener("click", setTheme)
+
+
 
 //document.getElementById("show_labels").addEventListener("change", label_phi_psi_togg);
 
@@ -478,4 +492,105 @@ function close_modal(){
   var span = document.getElementsByClassName("close")[0];
   span.style.display="none"
   modal.style.display = "none";
+}
+
+function setTheme(event) {
+  theme=event.target.id
+  console.log(theme)
+  switch(theme) {
+    case 'original':
+      console.log("set og theme")
+      document.getElementById("fifth").style.backgroundColor  = 'lightgreen';
+      document.getElementById("fifth").style.color = 'black';
+      document.getElementById("fourth").style.backgroundColor  = 'lightblue';
+      document.getElementById("fourth").style.color = 'black';
+      document.getElementById("third").style.backgroundColor  = 'lightgreen';
+      document.getElementById("third").style.color = 'black';
+      document.body.style.backgroundColor  = 'lightgrey';
+      document.getElementById("search_result").style.backgroundColor  ='#82C3EE'
+      document.getElementById("search_result1").style.backgroundColor  ='#82C3EE'
+      document.getElementById("search_result2").style.backgroundColor  ='#82C3EE'
+      document.getElementById("nav").style.backgroundColor  ='#e3f2fd'
+    //document.querySelectorAll('nav')[0].style.backgroundColor='#e3f2fd'
+
+      inputs=document.querySelectorAll('input')
+      for(var i=0; i< inputs.length;i++){
+        inputs[i].style.backgroundColor='white'
+      }
+      document.getElementById("jmolMenu3").style.backgroundColor='white'
+      document.getElementById("jmolMenu4").style.backgroundColor='white'
+      document.getElementById("jmolMenu5").style.backgroundColor='white'
+      document.getElementById("jmolMenu0").style.backgroundColor='white'
+      document.getElementById("jmolMenu1").style.backgroundColor='white'  
+      document.getElementById("jmolMenu2").style.backgroundColor='white'
+      //document.documentElement.style.setProperty('--text-color', 'black');
+      //document.documentElement.style.setProperty('--link-color', '#007bff');
+      
+      inputs=document.querySelectorAll('.nav-link')
+      for(var i=0; i< inputs.length;i++){
+        inputs[i].style.color='#839496'
+      }
+      
+      break;
+      case 'Solarised Dark':
+        console.log("set solar dark theme")
+        document.getElementById("fifth").style.backgroundColor  = '#073642';
+        document.getElementById("fifth").style.color = '#839496';
+        document.getElementById("fourth").style.backgroundColor  = '#073642';
+        document.getElementById("fourth").style.color = '#839496';
+        document.getElementById("third").style.backgroundColor  = '#073642';
+        document.getElementById("third").style.color = '#839496';
+        document.body.style.backgroundColor  = '#002b36';
+        document.getElementById("search_result").style.backgroundColor  ='#586e75'
+        document.getElementById("search_result1").style.backgroundColor  ='#586e75'
+        document.getElementById("search_result2").style.backgroundColor  ='#586e75'
+        document.getElementById("nav").style.backgroundColor  ='#93a1a1'
+       // document.getElementById("nav").style.color='#d30102'
+    // document.querySelectorAll('nav')[0].style.backgroundColor='#586e75'
+        inputs=document.querySelectorAll('.nav-link')
+      for(var i=0; i< inputs.length;i++){
+        inputs[i].style.color='#cb4b16'
+      }
+        document.getElementById("jmolMenu3").style.backgroundColor='#93a1a1'
+        document.getElementById("jmolMenu4").style.backgroundColor='#93a1a1'
+        document.getElementById("jmolMenu5").style.backgroundColor='#93a1a1'
+        document.getElementById("jmolMenu0").style.backgroundColor='#93a1a1'
+        document.getElementById("jmolMenu1").style.backgroundColor='#93a1a1'  
+        document.getElementById("jmolMenu2").style.backgroundColor='#93a1a1'
+
+     /*   var navitms=document.getElementsByClassName('nav-item')
+        for(var i=0;i<navitms.length;i++){
+          navitms[i].style.color="#d30102"
+        }*/
+      break;
+      case 'Pastel':
+        console.log("set pastal theme")
+        document.getElementById("fifth").style.backgroundColor  = '#A6B1E1';
+        document.getElementById("fifth").style.color = '#424874';
+        document.getElementById("fourth").style.backgroundColor  = '#A6B1E1';
+        document.getElementById("fourth").style.color = '#424874';
+        document.getElementById("third").style.backgroundColor  = '#A6B1E1';
+        document.getElementById("third").style.color = '#424874';
+        document.body.style.backgroundColor  = '#DCD6F7';
+        document.getElementById("search_result").style.backgroundColor  ='#9BA4B5'
+        document.getElementById("search_result1").style.backgroundColor  ='#9BA4B5'
+        document.getElementById("search_result2").style.backgroundColor  ='#9BA4B5'
+       document.getElementById("nav").style.backgroundColor  ='#9BA4B5'
+      // document.querySelectorAll('nav')[0].style.backgroundColor='#9BA4B5'
+        inputs=document.querySelectorAll('input')
+      for(var i=0; i< inputs.length;i++){
+        inputs[i].style.backgroundColor='#A6B1E1'
+      }
+        document.getElementById("jmolMenu3").style.backgroundColor='#A6B1E1'
+        document.getElementById("jmolMenu4").style.backgroundColor='#A6B1E1'
+        document.getElementById("jmolMenu5").style.backgroundColor='#A6B1E1'
+        document.getElementById("jmolMenu0").style.backgroundColor='#A6B1E1'
+        document.getElementById("jmolMenu1").style.backgroundColor='#A6B1E1'  
+        document.getElementById("jmolMenu2").style.backgroundColor='#A6B1E1'
+        inputs=document.querySelectorAll('.nav-link')
+        for(var i=0; i< inputs.length;i++){
+          inputs[i].style.color='black'
+        }
+      break;
+  }
 }

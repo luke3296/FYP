@@ -11,25 +11,43 @@
     <script type="text/javascript" src="JSmol.min.js"></script>
     <script type="text/javascript" src="js/JSmolJME.js"></script>
     <script type="text/javascript" src="jsme/jsme/jsme.nocache.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+ 
 
+    <style>
+
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand navbar-light" style="background-color: #e3f2fd;">
-        <div class="container-fluid">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" href="./home.html">Home Page</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link active" href="./submit_job.html">Submit Job</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link active" href="./view_structure.html">View Structure</a>
-              </li>
-            </ul>
-        </div>
-      </nav>
+  <ul id="nav" class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" href="./home.html">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="./submit_job.html">Submit Job</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="./view_structure.html">View Structure</a>
+      </li>
+  </ul> 
 
+<div id="creds" class="container">
+  <h1>This is a demo website</h1>
+  <p>Thank you to my supervisor for making this possible and providing the code this site showcases</p>
+  <p>Thank you to Bob Hanson for creating JSmol</p>
+  <p>Link to JSmol</p>
+  <a href="https://jmol.sourceforge.net/">JSmol</a>
+  <p>Link to paper introducing the algorithm this page showcases</p>
+  <a href="https://www.sciencedirect.com/science/article/pii/S0006349510001475">The Effect of End Constraints on Protein Loop Kinematics</a>
+  <p>This site uses Bootstrap5 </p>
+</div>
+<div id="guide" class="container">
+  <h1>User Guide</h1>
+  <img src="./images/submit_job.PNG" alt="Submit job page">
+  <p>&bull;</p>
+  <img src="./images/view_structure.PNG" alt="View structure page">
+</div>
+<!--
     <script>
         window.onload = function() {
         var JmolInfo = {
@@ -48,7 +66,7 @@
     };
     </script>
     <div id="appdiv"></div>
-
+  -->
 </body>
 
 </html>
