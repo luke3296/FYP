@@ -36,6 +36,7 @@
   <p>Thank you to my supervisor for making this possible and providing the code this site showcases</p>
   <p>Thank you to Bob Hanson for creating JSmol</p>
   <p>Link to JSmol</p>
+  Jmol: an open-source Java viewer for chemical structures in 3D. http://www.jmol.org/ 
   <a href="https://jmol.sourceforge.net/">JSmol</a>
   <p>Link to paper introducing the algorithm this page showcases</p>
   <a href="https://www.sciencedirect.com/science/article/pii/S0006349510001475">The Effect of End Constraints on Protein Loop Kinematics</a>
@@ -44,7 +45,31 @@
 <div id="guide" class="container">
   <h1>User Guide</h1>
   <img src="./images/submit_job.PNG" alt="Submit job page">
-  <p>&bull;</p>
+  <ol>
+    <li>A text input that takes the 4 character PDB ID</li>
+    <li>A text input that takes a single character representing the chain</li>
+    <li>A number input field that takes the start residue index</li>
+    <li>A number input field that takes the end residue index</li>
+    <li>A Button that loads a list of torsion angles into the space below the first row on inputs for the segment specified by start and end. To do this it loads a a JSmol applet in the section below (6)</li>
+    <li>Space for a JSmol applet to load</li>
+    <li>A number input that takes the amino acid index to set a target phi angle for</li>
+    <li>A number input that takes the target phi angle for the index in 7</li>
+    <li>A button to add a the pair of inputs 7,8 to a stack displayed below</li>
+    <li>A button to remove the last index, target phi angle pair </li>
+    <li>A number input that takes the amino acid index to set a target psi angle for</li>
+    <li>A number input that takes the target angle for the index  in 11</li>
+    <li>A button to add a the pair of inputs 11,12 to a stack displayed below</li>
+    <li>A button to remove the last index, target psi angle pair from a stack displayed below </li>
+    <li>A number input field that takes the amnio acid index to constrain the phi index of  </li>
+
+    <li>A number input field to set the number of itterations</li>
+    <li>A button to submit the job </li>
+    <li>A msg that indicates wether the file was created successfully or issues were encountered</li>
+    
+
+
+
+  </ol>
   <img src="./images/view_structure.PNG" alt="View structure page">
 </div>
 <!--

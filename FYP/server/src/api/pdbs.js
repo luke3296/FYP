@@ -52,8 +52,13 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   const pdbid = req.query.pdbid;
+  var seg_beg = req.query.segbeg;
+  var seg_end = req.query.segend;
+  if(seg_beg==undefined && seg_end==undefined){
+    console.log("seg beg is undefined")
+  
   try {
-    const result = await pdbs.find({ pdb_id: pdbid });
+    var result = await pdbs.find({ pdb_id: pdbid });
     if (result) {
       res.json(result);
     } else {
@@ -62,7 +67,42 @@ router.get('/', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+}else if(seg_beg != undefined && seg_end==undefined){
+  try {
+    var result = await pdbs.find({ pdb_id: pdbid , segbeg : parseInt(seg_beg)});
+    if (result) {
+      res.json(result);
+    } else {
+      res.json({ message: 'No document found with the given pdb_id segdeg' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}else if(seg_beg == undefined && seg_end!=undefined){
+  try {
+    const result = await pdbs.find({ pdb_id: pdbid, segend: parseInt(seg_end) });
+    if (result) {
+      res.json(result);
+    } else {
+      res.json({ message: 'No document found with the given pdb_id an segend' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}else{
+  try {
+    const result = await pdbs.find({ pdb_id: pdbid, segbeg: parseInt(seg_beg), segend: parseInt(seg_end) });
+    if (result) {
+      res.json(result);
+    } else {
+      res.json({ message: 'No document found with the given pdb_id and loop indexs' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 });
+
 //post one
 //RETURNS FILE PATH IF FILE EXSISTS OR FALSE IF NOT 
 router.post('/:id', async  (req, res, next) => {

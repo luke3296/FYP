@@ -85,14 +85,14 @@ select * and 1.1 ; color orange
 
 todo
 
-cartoon tube view of protein segment
-print atom coods for loop segement 
-play / pause step anim for animated pdb
-check in db, if not in db run script and copy pdb to output folder
-load a pdb from output folder
-super impose og with generated, 
-animated super imposed ontop of og 
-calculate inital torsions from selection 
+cartoon tube view of protein segment done
+print atom coods for loop segement  done
+play / pause step anim for animated pdb done
+check in db, if not in db run script and copy pdb to output folder done
+load a pdb from output folder done
+super impose og with generated,  done
+animated super imposed ontop of og done 
+calculate inital torsions from selection done
 
 
 a example of a malicous shell injection 
