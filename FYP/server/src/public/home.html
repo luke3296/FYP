@@ -32,15 +32,12 @@
   </ul> 
 
 <div id="creds" class="container">
-  <h1>This is a demo website</h1>
-  <p>Thank you to my supervisor for making this possible and providing the code this site showcases</p>
+  <h1>Final year project</h1>
   <p>Thank you to Bob Hanson for creating JSmol</p>
-  <p>Link to JSmol</p>
   Jmol: an open-source Java viewer for chemical structures in 3D. http://www.jmol.org/ 
   <a href="https://jmol.sourceforge.net/">JSmol</a>
-  <p>Link to paper introducing the algorithm this page showcases</p>
+  <p>The algorithm</p>
   <a href="https://www.sciencedirect.com/science/article/pii/S0006349510001475">The Effect of End Constraints on Protein Loop Kinematics</a>
-  <p>This site uses Bootstrap5 </p>
 </div>
 <div id="guide" class="container">
   <h1>User Guide</h1>
@@ -61,16 +58,45 @@
     <li>A button to add a the pair of inputs 11,12 to a stack displayed below</li>
     <li>A button to remove the last index, target psi angle pair from a stack displayed below </li>
     <li>A number input field that takes the amnio acid index to constrain the phi index of  </li>
-
+    <li>A Button to add an amino acid index to contrain the phi angle of</li>
+    <li>A Button to remove the last index to contrain the psi angle of</li>
+    <li>A number input field that takes the amnio acid index to constrain the psi index of  </li>
+    <li>A Button to add an amino acid index to contrain the psi angle of</li>
+    <li>A Button to remove the last index to contrain the psi angle of</li>
     <li>A number input field to set the number of itterations</li>
     <li>A button to submit the job </li>
     <li>A msg that indicates wether the file was created successfully or issues were encountered</li>
-    
-
-
-
   </ol>
   <img src="./images/view_structure.PNG" alt="View structure page">
+  <ol>
+    <li>A JSmol applet for viewing a protiens structure</li>
+    <li>A JSmol applet for viewing the loops structure</li>
+    <li>A number input field that takes an amnio acid index </li>
+    <li>A button that gets the the phi psi angle for the residue specified in 3 and adds it to 6</li>
+    <li>A button that clears the phi psi angles shown in 6</li>
+    <li>An output area containg a list of phi,psi angles. Clicking on them highlights the residue in 1 </li>
+    <li>A test input field that takes a 4 chacater pdb code</li>
+    <li>A button that loads the pdb code in 7 into applet 1</li>
+    <li>A button to rotate the model by 30 degrees about the y axis</li>
+    <li>A button to reset the view</li>
+    <li>A button that shows a popup displaying the pdb file header for the model loaded in 1</li>
+    <li>A Jmol radial group to change the applets background color</li>
+    <li>A Jmol menu to change the style</li>
+    <li>A Jmol menu to change the color</li>
+    <li>A Jmol menu to change the orientation</li>
+    <li>The left,right checkboxes select the jsmol applet, The text input filed takes a jsmol script string, the run buttons runs the script on the selected applet. The box below shows the command history </li>
+    <li>A checkbox that syncs the view when moved with the mouse</li>
+    <li>A checkbox that highlights the loop displayed in applet 2, in applet 1</li>
+    <li>A input that takes a 4 character pdb code, and two number inputs that take segbeg and segend respectivly.</li>
+    <li>A button that searches the database for loops matching the propeties in 19, and outputs it do the box below. Clicking on the loop description loads it into applet 2 </li> 
+    <li>A checkbox that shows the phi psi angles for carbon alpha atoms when the loop is animated</li>
+    <li>A button that loads in an alternative pdb file containg the same loop but surrounded by the rest of the structure unchanged. takes a while</li>
+    <li>A Jmol radial group to change the applets background color</li>
+    <li>A series of buttons for controlling the animation</li>
+    <li>A Jmol menu to change the style</li>
+    <li>A Jmol menu to change the color</li>
+    <li>A Jmol menu to change the orientation</li>
+  </ol>
 </div>
 <!--
     <script>

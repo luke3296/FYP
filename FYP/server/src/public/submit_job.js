@@ -1,7 +1,8 @@
 //server_name will be reassigned to the current host when the page loads
-server_name = "http://localhost:5123/"
-post_job_endpoint='/api/v1/pdbs/'
-
+var server_name = "http://localhost:5123/"
+var post_job_endpoint='/api/v1/pdbs/'
+var full_endpoint='http://localhost:5123/api/v1/pdbs/'
+var protocol='http'
 let target_residues_phi_stack = [];
 let target_residues_psi_stack = [];
 let constr_residues_phi_stack = [];
@@ -10,6 +11,13 @@ let constr_residues_psi_stack = [];
 window.onload=function(){
 	console.log(window.location.host)
 	server_name=window.location.host
+	protocol=window.location.protocol
+	port=window.location.port
+	if(window.location.port==""){
+		full_endpoint=protocol+'//'+server_name+post_job_endpoint
+	}else{
+		full_endpoint=protocol+'//'+server_name+post_job_endpoint
+	}	
 	document.getElementById("original").addEventListener("click", setTheme)
 	document.getElementById("Solarised Dark").addEventListener("click", setTheme)
 	document.getElementById("Pastel").addEventListener("click", setTheme)
@@ -148,7 +156,7 @@ async function submit_to_server() {
         //console.log(obj)http://
 		//await fetch('http://localhost:5123/api/v1/pdbs/', {
 		document.querySelector('.spinner-border').hidden=false
-		await fetch('http://'+server_name+post_job_endpoint, {
+		await fetch(full_endpoint, {
 				method: 'POST',
 				headers: {
 					'Accept': 'application/json, text/plain, */*',

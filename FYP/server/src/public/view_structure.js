@@ -10,13 +10,20 @@ var cmd_hist=''
 var theme='original'
 
 var server_name = "http://localhost:5123/"
+var post_job_endpoint='/api/v1/pdbs/'
+var Submit_endpoint='http://localhost:5123/api/v1/pdbs/'
+var protocol='http'
+
 
 
 
 window.onload = function() { 
 window.onresize = handleWindowSize;
 server_name=window.location.host
-console.log(server_name)
+protocol=window.location.protocol
+port=window.location.port
+Submit_endpoint=protocol+'//'+server_name+post_job_endpoint
+//Search_endpoint=http://localhost:5123/api/v1/pdbs/?pdbid="+query.toUpperCase()
 
 document.getElementById("right window").checked = false;
 document.getElementById("left window").checked = true;
@@ -311,11 +318,22 @@ async function check_file_exsists(fname_){
 }
 
 async function Search(){
-  query=document.getElementById("search_q").value
+  pdbid=document.getElementById("search_q").value.toUpperCase()
   q_beg=document.getElementById("search_beg").value
   q_end=document.getElementById("search_end").value
-  console.log(q_end)
-  query="http://localhost:5123/api/v1/pdbs/?pdbid="+query.toUpperCase()
+  var query=Submit_endpoint+'?pdbid='
+  if(q_beg =="" && q_end ==""){ //search pdb only
+    query+=pdbid
+  }else if(q_beg !="" && q_end ==""){ //search for pdb + segbeg
+    query+=pdbid+'&segbeg='+q_beg
+  }else if(q_beg =="" && q_end !=""){ //seach for pdb + segend
+    query+=pdbid+'&segend='+q_end
+  }else{                              //search for pdb + segbeg + segend
+    query+=pdbid+'&segbeg='+q_beg+'&segend='+q_end
+  }
+  console.log(query)
+  //query="http://localhost:5123/api/v1/pdbs/?pdbid="+query.toUpperCase()
+
   fetch(query)
   .then(response => response.json())
   .then(data => {

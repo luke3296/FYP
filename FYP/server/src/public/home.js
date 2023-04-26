@@ -1,5 +1,9 @@
+protocol='http'
+host='localhost'
+port='5123'
 window.onload=function(){
-	console.log(window.location.host)
+	console.log(window.location)
+	protocol=window.location.protocol
 	server_name=window.location.host
-
+	port=window.location.port
 }
