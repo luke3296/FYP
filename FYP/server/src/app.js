@@ -32,9 +32,9 @@ var corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 //mount public files on /public
-app.use('/public', express.static(path.join(__dirname, 'public')))
+app.use('/public', express.static(path.join(__dirname, 'public'), {index: 'home.html'}))
 // add the examples below, can remove later
-app.use('/public/examples', express.static(path.join(__dirname, 'public')))
+//app.use('/public/examples', express.static(path.join(__dirname, 'public')))
 
 
 app.set('view engine', 'ejs');

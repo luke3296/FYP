@@ -291,8 +291,8 @@ async function load_from_server(event){
   current_loop=result6
 
   
-  console.log(parent.querySelectorAll('p')[0].innerText)
-  console.log(parent.querySelectorAll('p')[0].innerHTML)
+  //console.log(parent.querySelectorAll('p')[0].innerText)
+  //console.log(parent.querySelectorAll('p')[0].innerHTML)
   exsists=await check_file_exsists(fname)
   console.log("exsists")
   console.log(exsists)
@@ -305,7 +305,7 @@ async function load_from_server(event){
 }
 async function check_file_exsists(fname_){
   console.log("searching for "+fname_ )
-  let res_= await fetch("http://localhost:5123/api/v1/pdbs/1", {
+  let res_= await fetch(Submit_endpoint+"1", {
     method : 'POST',
     headers : {
       'Content-Type' : 'application/json'
@@ -487,11 +487,12 @@ function label_phi_psi(){
 async function load_alt(event){
   console.log(event)
   
-  altfname=current_loop_fname.replace('.pdb', 'ALT')+'.pdb'
+  altfname=current_loop_fname.replace('.pdb', '_ALT')+'.pdb'
   exsists=await check_file_exsists(altfname)
   if(exsists == false){
     alert("server err that file doesn't exsist but is reference in the database")
   }else{
+    console.log()
     Jmol.script(jmolApplet1, "load "+exsists)
   }
 }

@@ -181,7 +181,7 @@ router.post('/', async (req, res, next) => {
           fileStream.on('finish', () => {
             console.log(`Downloaded pdb `);
             var alt_name=obj.fname.replace('.pdb', '_ALT')+'.pdb'
-            processFile(filePath,filePath1+obj.fname,filePath1+alt_name )
+            procFile(filePath,filePath1+obj.fname,filePath1+alt_name )
           });
         } else {
           console.error(`Failed to download : ${res.statusCode}`);
@@ -191,7 +191,7 @@ router.post('/', async (req, res, next) => {
       });
       //end of alternate
       var insertd = await insert2db(obj)
-      res.json({"redirectUrl" : process.env.HOST+"/public/OutputPDBS/"+obj.fname})
+      res.json({"redirectUrl" : "/public/OutputPDBS/"+obj.fname})
     }else{
       res.json({"redirectUrl" : false})
     }
@@ -199,7 +199,7 @@ router.post('/', async (req, res, next) => {
   }else{
     //in DB
     console.log("in db")
-    res.json({"redirectUrl" : process.env.HOST+"/public/OutputPDBS/"+obj.fname})
+    res.json({"redirectUrl" : "/public/OutputPDBS/"+obj.fname})
   }
   
   console.log("res")
@@ -539,7 +539,7 @@ function sanitizeInputObj(user_obj){
 // Read the contents of the two PDB files
 //const file1Content = fs.readFileSync('file1.pdb', 'utf-8');
 //const file2Content = fs.readFileSync('file2.pdb', 'utf-8');
-function processFile(pdbfile, loopfile, outfile){
+function procFile(pdbfile, loopfile, outfile){
 const readline = require('readline');
 const fileContent = fs.readFileSync(loopfile, 'utf-8');
 const fileContent1 = fs.readFileSync(pdbfile, 'utf-8');
